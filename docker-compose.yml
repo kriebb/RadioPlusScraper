@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  radioplusscraperwebapi:
+    image: ${DOCKER_REGISTRY}radioplusscraperwebapi
+    build:
+      context: .\RadioPlusScraperWebApi
+      dockerfile: Dockerfile
