@@ -19,7 +19,7 @@
     "RadioPlusScraperCoreWebApp": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "api/values",
+      "launchUrl": "api/rss/get?name=weetikveel",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },

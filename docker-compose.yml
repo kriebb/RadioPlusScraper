@@ -5,5 +5,8 @@ services:
     image: ${DOCKER_REGISTRY}radioplusscrapercorewebapp
     build:
       context: .
-      dockerfile: RadioPlusScraperCoreWebApp/Dockerfile
-
+      dockerfile: ./Dockerfile
+#    depends_on:
+#      - standalonechromeselenium
+#  standalonechromeselenium:
+#    image: selenium/standalone-chrome
