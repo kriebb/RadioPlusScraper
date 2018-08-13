@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Hangfire;
+using Hangfire.Dashboard;
 using Hangfire.MemoryStorage;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -27,6 +28,7 @@ namespace RadioPlusScraperCoreWebApp
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddAuthenticationCore();
             services.AddHangfire(globalConfig =>
             {
                 globalConfig.UseMemoryStorage();
@@ -34,6 +36,10 @@ namespace RadioPlusScraperCoreWebApp
 
             });
             services.AddMvc();
+
+            services.AddSingleton<IRadioPlusDownloader, RadioPlusDownloader>();
+            services.AddSingleton<IRadioPlusDownloadHandler, RadioPlusDownloadHandler>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -47,9 +53,22 @@ namespace RadioPlusScraperCoreWebApp
             app.UseMvc();
 
             app.UseHangfireServer();
-            app.UseHangfireDashboard();
+            app.UseHangfireDashboard("/hangfire", new DashboardOptions() { Authorization = new[] { new MyAuthorizationFilter() } });
 
-            BackgroundJob.Enqueue(() => RadioPlusDownloadHandler.Start());
+            var downloadHandler = app.ApplicationServices.GetService<IRadioPlusDownloadHandler>();
+            BackgroundJob.Enqueue(() => downloadHandler.Start());
+        }
+    }
+
+    public class MyAuthorizationFilter : IDashboardAuthorizationFilter
+    {
+        public bool Authorize(DashboardContext context)
+        {
+            var httpContext = context.GetHttpContext();
+
+            // Allow all authenticated users to see the Dashboard (potentially dangerous).
+            //return httpContext.User.Identity.IsAuthenticated;
+            return true;
         }
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
+using RadioPlusOnDemand.Json;
 using WebScrapingProject;
 
 namespace RadioPlusScraperWebApi.Controllers
@@ -22,6 +23,12 @@ namespace RadioPlusScraperWebApi.Controllers
             _rssItemsDoDownload = rssItemsDoDownload.ToArray();
         }
 
+        [HttpPost]
+        public IActionResult Post(string onDemandMaterialJson)
+        {
+            RadioPlusDownloadHandler.DownloadResult = RadioPlusOnDemandData.FromJson(onDemandMaterialJson);
+            return Ok();
+        }
         [HttpGet]
 
         public IActionResult Get(string name)

@@ -1,25 +1,36 @@
 ﻿using System;
 using System.Collections.Generic;
 using Hangfire;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration.Json;
 using RadioPlusOnDemand.Json;
 using WebScrapingProject;
 
 namespace RadioPlusScraperWebApi
 {
-    public static class RadioPlusDownloadHandler
+    public interface IRadioPlusDownloadHandler
     {
-        public static List<string> JobIds = new List<string>();
-        public static void Start()
+        void Start();
+    }
+    public class RadioPlusDownloadHandler : IRadioPlusDownloadHandler
+    {
+        private readonly IRadioPlusDownloader _radioPlusDownloader;
+
+        public RadioPlusDownloadHandler(IRadioPlusDownloader radioPlusDownloader)
+        {
+            _radioPlusDownloader = radioPlusDownloader;
+        }
+        public List<string> JobIds = new List<string>();
+        public void Start()
         {
             TimeSpan timeSpanRetry = TimeSpan.Zero;
-            Console.WriteLine(nameof(RadioPlusDownloadHandler)+"."+nameof(Start));
+            Console.WriteLine(nameof(RadioPlusDownloadHandler) + "." + nameof(Start));
             try
             {
                 lock (DownloadResultLock)
                 {
-                    var downloader = new RadioPlusDownloader();
                     DownloadResult =
-                        downloader.GetOnDemandMaterialJson(WebScrapingProject.RadioPlus.RadioPlusOnDemandUrl);
+                        _radioPlusDownloader.GetOnDemandMaterialJson(WebScrapingProject.RadioPlus.RadioPlusOnDemandUrl);
                     timeSpanRetry = TimeSpan.FromHours(1);
                 }
             }
@@ -27,14 +38,15 @@ namespace RadioPlusScraperWebApi
             {
                 Console.WriteLine(e);
                 timeSpanRetry = TimeSpan.FromSeconds(1);
+                throw e; //let hangfire retry
             }
             finally
             {
-                Console.WriteLine("Retrying next:"+timeSpanRetry.ToString());
+                Console.WriteLine("Retrying next:" + timeSpanRetry.ToString());
             }
             try
             {
-                var jobId = BackgroundJob.Schedule(() => RadioPlusDownloadHandler.Start(), timeSpanRetry);
+                var jobId = BackgroundJob.Schedule(() => this.Start(), timeSpanRetry);
                 Console.WriteLine($"Scheduling job with id:{jobId} ");
 
                 JobIds.Add(jobId);
@@ -45,7 +57,7 @@ namespace RadioPlusScraperWebApi
             }
 
         }
-        private static Object DownloadResultLock = new Object();
+        private static readonly Object DownloadResultLock = new Object();
         public static RadioPlusOnDemandData[] DownloadResult { get; set; } = new RadioPlusOnDemandData[0];
     }
 }

@@ -5,8 +5,10 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using Hangfire;
+using Microsoft.Extensions.Configuration;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Remote;
 using OpenQA.Selenium.Support.Extensions;
 using OpenQA.Selenium.Support.UI;
 using RadioPlusOnDemand.Json;
@@ -21,22 +23,28 @@ namespace WebScrapingProject
         public const string RadioPlusOnDemandUrl = "http://radioplus.be/#/radio1/herbeluister/";
 
     }
-    public class RadioPlusDownloader
+
+    public interface IRadioPlusDownloader
     {
+        RadioPlusOnDemandData[] GetOnDemandMaterialJson(string onDemandUrl);
+    }
+    public class RadioPlusDownloader : IRadioPlusDownloader
+    {
+        private readonly IConfiguration _configuration;
+
+        public RadioPlusDownloader(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
         public RadioPlusOnDemandData[] GetOnDemandMaterialJson(string channelUrl)
         {
             try
             {
                 string onDemandMaterialJson;
 
-                var options = new ChromeOptions();
-                options.AddArgument("headless");
-                options.AddArgument("no-sandbox");
-                options.AddArgument("disable-dev-shm-usage");
 
-                options.AcceptInsecureCertificates = true;
-
-                using (var driver = new ChromeDriver(options))
+                var remoteAddress = _configuration["remoteWebDriver:remoteAddress"];
+                using (var driver = new RemoteWebDriver(new Uri(remoteAddress),new ChromeOptions(){AcceptInsecureCertificates = true}))
                 {
                     driver.Navigate().GoToUrl(channelUrl);
                     driver.Wait(6000000).ForPage().ReadyStateComplete();
@@ -63,7 +71,7 @@ namespace WebScrapingProject
         }
     }
 
-  
+
     public class RssManager
     {
 
