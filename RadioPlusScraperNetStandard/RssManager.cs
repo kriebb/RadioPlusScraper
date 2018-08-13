@@ -18,9 +18,19 @@ using Uncas.Web;
 
 namespace WebScrapingProject
 {
-    public class RadioPlus
+    public class RadioPlusConst
     {
-        public const string RadioPlusOnDemandUrl = "http://radioplus.be/#/radio1/herbeluister/";
+        private const string RadioPlusOnDemandUrl = "http://radioplus.be/#/{0}/herbeluister/";
+
+        public static string GetRadioPlusOnDemandUrl(string radio)
+        {
+            string ondemandUrl = string.Format(RadioPlusOnDemandUrl, radio);
+            return ondemandUrl;
+        }
+
+        public static string Radio1 = "radio1";
+        public static string Radio2 = "radio2-vlaams-brabant";
+        public static string[] AllRadios = { Radio1, Radio2 };
 
     }
 
@@ -42,9 +52,10 @@ namespace WebScrapingProject
             {
                 string onDemandMaterialJson;
 
+                //var listOfObjects = new List<string>();
 
                 var remoteAddress = _configuration["remoteWebDriver:remoteAddress"];
-                using (var driver = new RemoteWebDriver(new Uri(remoteAddress),new ChromeOptions(){AcceptInsecureCertificates = true}))
+                using (var driver = new RemoteWebDriver(new Uri(remoteAddress), new ChromeOptions() { AcceptInsecureCertificates = true }))
                 {
                     driver.Navigate().GoToUrl(channelUrl);
                     driver.Wait(6000000).ForPage().ReadyStateComplete();
@@ -52,14 +63,45 @@ namespace WebScrapingProject
                         .ForElement(
                             By.CssSelector("#content > div > div.content-view > ul > li > a > span > span.episodes"))
                         .ToExist();
+                    /*
+                    var length = driver.ExecuteJavaScript<string>("return \"\"+ (require('app').currentView.content.channel.ondemand.length);");
+
+                    var getSlice =
+                        "return (JSON.stringify(require('app').currentView.content.channel.ondemand.slice({0},{1}));";
+                    if (int.TryParse(length, out var intLength))
+                    {
+                        int min = 0;
+                        int max = 10;
+                        do
+                        {
+                            min = max;
+                            max += 10;
+                            if (max > intLength)
+                                max = intLength - 1;
+
+                            var slicing = string.Format(getSlice, min, max);
+                            var onDemandMaterialJsonPart = driver.ExecuteJavaScript<string>(slicing);
+                            listOfObjects.Add(onDemandMaterialJsonPart);
+                        } while (max < intLength);
+
+
+
+                    }
+                    */
 
                     onDemandMaterialJson =
                         driver.ExecuteJavaScript<string>(
                             "return (JSON.stringify(require('app').currentView.content.channel.ondemand));");
+
                 }
 
-
                 var onDemandMaterialData = RadioPlusOnDemandData.FromJson(onDemandMaterialJson);
+                /*
+                var listOfMaterial = new List<RadioPlusOnDemandData[]>();
+                var tempArray = listOfObjects.Select(RadioPlusOnDemandData.FromJson);
+                listOfMaterial.AddRange(tempArray);
+                var onDemandMaterialData = listOfMaterial.SelectMany(x => x).ToArray();
+                */
 
                 return onDemandMaterialData;
             }
@@ -77,7 +119,8 @@ namespace WebScrapingProject
 
         public string GetRssString(string radio, string channelTitle, Guid channelId, RadioPlusOnDemandData[] onDemandMaterialData)
         {
-            string channelUrl = Url.Combine(RadioPlus.RadioPlusOnDemandUrl, channelId.ToString());
+            string ondemandUrl = RadioPlusConst.GetRadioPlusOnDemandUrl(radio);
+            string channelUrl = Url.Combine(ondemandUrl, channelId.ToString());
 
 
             var channel = onDemandMaterialData.FirstOrDefault(x => x.CollectionId == channelId);
@@ -157,13 +200,13 @@ namespace WebScrapingProject
         public string GetRssString(string radio, string title, string description, RadioPlusOnDemandData[] onDemandMaterialData)
         {
             var feed = new Feed(title: radio, description: description);
-            feed.AlternateLink = RadioPlus.RadioPlusOnDemandUrl;
+            feed.AlternateLink = RadioPlusConst.GetRadioPlusOnDemandUrl(radio);
             feed.Copyright = "vrt";
             feed.ImageUrl = "https://lh4.ggpht.com/CdCC7h9Ft5sftidozzTWggH9mUwbdBHO_1ZZCuk_O_A_2TpDuxqxqpf9OAE91LpkBw";
             feed.Author = "vrt";
             feed.WebMaster = new FeedEmailAddress("info@radioplus.be", "RadioPlus");
             feed.ImageTitle = title;
-            feed.Link = RadioPlus.RadioPlusOnDemandUrl;
+            feed.Link = RadioPlusConst.GetRadioPlusOnDemandUrl(radio);
             feed.Language = "nl-BE";
             feed.Title = title;
             var feedItems = new List<FeedItem>();
@@ -177,7 +220,7 @@ namespace WebScrapingProject
 
                 foreach (var episode in channel.Items)
                 {
-                    string channelUrl = Url.Combine(RadioPlus.RadioPlusOnDemandUrl, channel.CollectionId.ToString());
+                    string channelUrl = Url.Combine(RadioPlusConst.GetRadioPlusOnDemandUrl(radio), channel.CollectionId.ToString());
                     var feedItem = MapToEpisode(episode, channelUrl); //do more with async
                     feedItems.Add(feedItem);
                 }

@@ -20,7 +20,8 @@ namespace RadioPlusScraperWebApi
         {
             _radioPlusDownloader = radioPlusDownloader;
         }
-        public List<string> JobIds = new List<string>();
+
+        private readonly List<string> _jobIds = new List<string>();
         public void Start()
         {
             TimeSpan timeSpanRetry = TimeSpan.Zero;
@@ -29,8 +30,14 @@ namespace RadioPlusScraperWebApi
             {
                 lock (DownloadResultLock)
                 {
-                    DownloadResult =
-                        _radioPlusDownloader.GetOnDemandMaterialJson(WebScrapingProject.RadioPlus.RadioPlusOnDemandUrl);
+                    var myList = new List<RadioPlusOnDemandData>();
+                    foreach (var radio in RadioPlusConst.AllRadios)
+                    {
+                        var items = _radioPlusDownloader.GetOnDemandMaterialJson(WebScrapingProject.RadioPlusConst.GetRadioPlusOnDemandUrl(radio));
+                        myList.AddRange(items);
+                    }
+
+                    DownloadResult = myList.ToArray();
                     timeSpanRetry = TimeSpan.FromHours(1);
                 }
             }
@@ -49,7 +56,7 @@ namespace RadioPlusScraperWebApi
                 var jobId = BackgroundJob.Schedule(() => this.Start(), timeSpanRetry);
                 Console.WriteLine($"Scheduling job with id:{jobId} ");
 
-                JobIds.Add(jobId);
+                _jobIds.Add(jobId);
             }
             catch (Exception e)
             {

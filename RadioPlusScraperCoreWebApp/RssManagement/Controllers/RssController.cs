@@ -18,16 +18,19 @@ namespace RadioPlusScraperWebApi.Controllers
         public RssController()
         {
             var rssItemsDoDownload = new List<RssControllerItem>();
-            rssItemsDoDownload.Add(new RssControllerItem() { ChannelId = new Guid("4f2d4613-41d7-11e6-aa7a-00163edf843f"), NameId = "weetikveel", Title = "#WeetIkVeel", RadioStation = "radio1" });
-            rssItemsDoDownload.Add(new RssControllerItem() { ChannelId = new Guid("e23e6a65-90d2-11e3-b45a-00163edf75b7"), NameId = "internekeuken", Title = "Interne Keuken", RadioStation = "radio1" });
+            rssItemsDoDownload.Add(new RssControllerItem() { ChannelId = new Guid("4f2d4613-41d7-11e6-aa7a-00163edf843f"), NameId = "weetikveel", Title = "#WeetIkVeel", RadioStation = RadioPlusConst.Radio1 });
+            rssItemsDoDownload.Add(new RssControllerItem() { ChannelId = new Guid("e23e6a65-90d2-11e3-b45a-00163edf75b7"), NameId = "internekeuken", Title = "Interne Keuken", RadioStation = RadioPlusConst.Radio1 });
+            rssItemsDoDownload.Add(new RssControllerItem() { ChannelId = new Guid("dca18fa1-41cf-11e6-aa7a-00163edf843f"), NameId = "plagepreferee", Title = "Plage préférée", RadioStation = RadioPlusConst.Radio2 });
+            rssItemsDoDownload.Add(new RssControllerItem() { ChannelId = new Guid("c391a1e7-3b24-11e4-be6c-00163edf75b7"), NameId = "dezoeteinval", Title = "De zoete inval", RadioStation = RadioPlusConst.Radio2 });
+            rssItemsDoDownload.Add(new RssControllerItem() { ChannelId = new Guid("a410c7c6-3be5-11e4-be6c-00163edf75b7"), NameId = "derotonde", Title = "De Rotonde", RadioStation = RadioPlusConst.Radio2 });
+
             _rssItemsDoDownload = rssItemsDoDownload.ToArray();
         }
 
-        [HttpPost]
-        public IActionResult Post(string onDemandMaterialJson)
+        [HttpGet]
+        public IActionResult GetRadioPlusOnDemandData()
         {
-            RadioPlusDownloadHandler.DownloadResult = RadioPlusOnDemandData.FromJson(onDemandMaterialJson);
-            return Ok();
+            return Ok(RadioPlusDownloadHandler.DownloadResult);
         }
         [HttpGet]
 
