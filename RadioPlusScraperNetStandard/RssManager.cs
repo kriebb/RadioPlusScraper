@@ -125,13 +125,13 @@ namespace WebScrapingProject
 
             var channel = onDemandMaterialData.FirstOrDefault(x => x.CollectionId == channelId);
 
-            var feed = new Feed(title: radio, description: channelTitle);
+            var feed = new Feed(title: channelTitle + $"({radio})", description: radio);
             feed.AlternateLink = channelUrl;
             feed.Copyright = "vrt";
             feed.ImageUrl = channel?.Thumb;
             feed.Author = "vrt";
             feed.WebMaster = new FeedEmailAddress("info@radioplus.be", "RadioPlus");
-            feed.ImageTitle = channelTitle;
+            feed.ImageTitle = channelTitle + $"({radio})";
             feed.Link = channelUrl;
             feed.Language = "nl-BE";
 

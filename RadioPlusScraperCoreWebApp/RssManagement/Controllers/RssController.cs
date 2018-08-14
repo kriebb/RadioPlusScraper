@@ -28,7 +28,7 @@ namespace RadioPlusScraperWebApi.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetRadioPlusOnDemandData()
+        public IActionResult GetRaw()
         {
             return Ok(RadioPlusDownloadHandler.DownloadResult);
         }
