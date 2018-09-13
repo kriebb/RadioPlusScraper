@@ -1,0 +1,112 @@
+Microsoft Windows [Version 10.0.17134.165]
+(c) 2018 Microsoft Corporation. All rights reserved.
+
+C:\WINDOWS\system32>docker run -d -p 4444:4444 --shm-size=2g selenium/standalone-chrome:3.14.0-arsenic
+Unable to find image 'selenium/standalone-chrome:3.14.0-arsenic' locally
+3.14.0-arsenic: Pulling from selenium/standalone-chrome
+Digest: sha256:8ea147878016fb200dd07d92d39f11d6522707d630202a1b1c15d748a2bee06f
+Status: Downloaded newer image for selenium/standalone-chrome:3.14.0-arsenic
+c398a249392b09e49389c4d2593c6a0b4d11e1257809960bd70090f7e7a354f3
+
+
+---
+
+Microsoft Windows [Version 10.0.17134.165]
+(c) 2018 Microsoft Corporation. All rights reserved.
+
+C:\WINDOWS\system32>az login
+Note, we have launched a browser for you to login. For old experience with device code, use "az login --use-device-code"
+You have logged in. Now let us find all the subscriptions to which you have access...
+[
+  {
+    "cloudName": "AzureCloud",
+    "id": "7ebdeab9-8060-4fe5-b6c5-a522c7f206b6",
+    "isDefault": true,
+    "name": "Visual Studio Enterprise \u2013 MPN",
+    "state": "Enabled",
+    "tenantId": "b170db8b-8e00-4ad4-a076-ccc84281725d",
+    "user": {
+      "name": "riebbels.kristof.recomatics@hotmail.com",
+      "type": "user"
+    }
+  }
+]
+
+C:\WINDOWS\system32>az acr login --name containerRegistry
+The resource with name 'containerRegistry' and type 'Microsoft.ContainerRegistry/registries' could not be found in subscription 'Visual Studio Enterprise – MPN (7ebdeab9-8060-4fe5-b6c5-a522c7f206b6)'.
+
+C:\WINDOWS\system32>az acr login --name seleniumContainerRegistry
+Login Succeeded
+
+C:\WINDOWS\system32>docker ps
+CONTAINER ID        IMAGE                                       COMMAND                  CREATED             STATUS              PORTS                    NAMES
+c398a249392b        selenium/standalone-chrome:3.14.0-arsenic   "/opt/bin/entry_poin…"   15 minutes ago      Up 15 minutes       0.0.0.0:4444->4444/tcp   stoic_goodall
+
+C:\WINDOWS\system32>docker stop c398a249392b
+c398a249392b
+
+C:\WINDOWS\system32>docker tag  selenium/standalone-chrome:3.14.0-arsenic seleniumContainerRegistry.azurecr.io/selenium
+
+C:\WINDOWS\system32>docker push seleniumContainerRegistry.azurecr.io/selenium
+The push refers to repository [seleniumContainerRegistry.azurecr.io/selenium]
+46633f0586d8: Pushed
+4f5feb142710: Pushed
+72840749bca8: Pushed
+8d331e03e35d: Pushed
+657cfc2e15a5: Pushed
+98313a2cba28: Pushed
+3c2003e43ac5: Pushing [==================================================>]  443.5MB
+3c2003e43ac5: Pushed
+402ffa13597a: Pushed
+1ab56b003e8b: Pushed
+48b1b5ef5604: Pushed
+385f1fee572c: Pushed
+8c63cb20b8cd: Pushed
+0e3b1af8adf7: Pushed
+70f675152cda: Pushed
+6eba6110ccc4: Pushed
+bcff331e13e3: Pushed
+2166dba7c95b: Pushed
+5e95929b2798: Pushed
+c2af38e6b250: Pushed
+0a42ee6ceccb: Pushed
+
+latest: digest: sha256:8ea147878016fb200dd07d92d39f11d6522707d630202a1b1c15d748a2bee06f size: 4710
+
+
+C:\WINDOWS\system32>docker pull seleniumcontainerregistry.azurecr.io/selenium
+Using default tag: latest
+latest: Pulling from selenium
+Digest: sha256:8ea147878016fb200dd07d92d39f11d6522707d630202a1b1c15d748a2bee06f
+Status: Downloaded newer image for seleniumcontainerregistry.azurecr.io/selenium:latest
+
+C:\WINDOWS\system32>docker push seleniumcontainerregistry.azurecr.io/selenium
+The push refers to repository [seleniumcontainerregistry.azurecr.io/selenium]
+46633f0586d8: Layer already exists
+4f5feb142710: Layer already exists
+72840749bca8: Layer already exists
+8d331e03e35d: Layer already exists
+657cfc2e15a5: Layer already exists
+98313a2cba28: Layer already exists
+3c2003e43ac5: Layer already exists
+195cbc461a59: Layer already exists
+402ffa13597a: Layer already exists
+1ab56b003e8b: Layer already exists
+48b1b5ef5604: Layer already exists
+385f1fee572c: Layer already exists
+8c63cb20b8cd: Layer already exists
+0e3b1af8adf7: Layer already exists
+70f675152cda: Layer already exists
+6eba6110ccc4: Layer already exists
+bcff331e13e3: Layer already exists
+2166dba7c95b: Layer already exists
+5e95929b2798: Layer already exists
+c2af38e6b250: Layer already exists
+0a42ee6ceccb: Layer already exists
+latest: digest: sha256:8ea147878016fb200dd07d92d39f11d6522707d630202a1b1c15d748a2bee06f size: 4710
+
+C:\WINDOWS\system32>docker pull seleniumcontainerregistry.azurecr.io/selenium
+Using default tag: latest
+latest: Pulling from selenium
+Digest: sha256:8ea147878016fb200dd07d92d39f11d6522707d630202a1b1c15d748a2bee06f
+Status: Image is up to date for seleniumcontainerregistry.azurecr.io/selenium:latest

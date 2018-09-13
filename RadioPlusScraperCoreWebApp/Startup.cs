@@ -37,9 +37,10 @@ namespace RadioPlusScraperCoreWebApp
             });
             services.AddMvc();
 
-            services.AddSingleton<IRadioPlusDownloader, RadioPlusDownloader>();
+            services.AddSingleton<IRadioPlusWebContentDownloader, RadioPlusWebContentWebContentDownloader>();
             services.AddSingleton<IRadioPlusDownloadHandler, RadioPlusDownloadHandler>();
-
+            services.AddSingleton<IRadioPlusDownloadOrchestrator, RadioPlusDownloadOrchestrator>();
+            services.AddSingleton<IDockerContainerHandler, DockerContainerHandler>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -56,7 +57,8 @@ namespace RadioPlusScraperCoreWebApp
             app.UseHangfireDashboard("/hangfire", new DashboardOptions() { Authorization = new[] { new MyAuthorizationFilter() } });
 
             var downloadHandler = app.ApplicationServices.GetService<IRadioPlusDownloadHandler>();
-            BackgroundJob.Enqueue(() => downloadHandler.Start());
+        
+             BackgroundJob.Enqueue(() => downloadHandler.Start());
         }
     }
 

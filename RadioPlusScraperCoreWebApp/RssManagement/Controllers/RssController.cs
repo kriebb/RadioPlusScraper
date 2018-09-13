@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using RadioPlusOnDemand.Json;
+using RadioPlusScraperCoreWebApp;
 using WebScrapingProject;
 
 namespace RadioPlusScraperWebApi.Controllers
@@ -23,6 +24,8 @@ namespace RadioPlusScraperWebApi.Controllers
             rssItemsDoDownload.Add(new RssControllerItem() { ChannelId = new Guid("dca18fa1-41cf-11e6-aa7a-00163edf843f"), NameId = "plagepreferee", Title = "Plage préférée", RadioStation = RadioPlusConst.Radio2 });
             rssItemsDoDownload.Add(new RssControllerItem() { ChannelId = new Guid("c391a1e7-3b24-11e4-be6c-00163edf75b7"), NameId = "dezoeteinval", Title = "De zoete inval", RadioStation = RadioPlusConst.Radio2 });
             rssItemsDoDownload.Add(new RssControllerItem() { ChannelId = new Guid("a410c7c6-3be5-11e4-be6c-00163edf75b7"), NameId = "derotonde", Title = "De Rotonde", RadioStation = RadioPlusConst.Radio2 });
+            rssItemsDoDownload.Add(new RssControllerItem() { ChannelId = new Guid("f2e4071b-34c2-11e8-94b7-02b7b76bf47f"), NameId = "derechtvaardigerechters", Title = "De Rechtvaardige Rechters", RadioStation = RadioPlusConst.Radio2 });
+            rssItemsDoDownload.Add(new RssControllerItem() { ChannelId = new Guid("69a0b053-8e90-11e3-b45a-00163edf75b7"), NameId = "nieuwefeiten", Title = "Nieuwe Feiten", RadioStation = RadioPlusConst.Radio1 });
 
             _rssItemsDoDownload = rssItemsDoDownload.ToArray();
         }
