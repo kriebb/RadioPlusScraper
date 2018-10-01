@@ -13,12 +13,12 @@ namespace RadioPlusScraperWebApi
 {
     internal class RadioPlusDownloadOrchestrator : IRadioPlusDownloadOrchestrator
     {
-        private readonly IRadioPlusWebContentDownloader _radioPlusWebContentDownloader;
+        private readonly IRadioPlusDownloadHandler _radioPlusDownloadHandler;
         private readonly IDockerContainerHandler _dockerContainerHandler;
 
-        public RadioPlusDownloadOrchestrator(IRadioPlusWebContentDownloader radioPlusWebContentDownloader, IDockerContainerHandler dockerContainerHandler)
+        public RadioPlusDownloadOrchestrator(IRadioPlusDownloadHandler radioPlusDownloadHandler, IDockerContainerHandler dockerContainerHandler)
         {
-            _radioPlusWebContentDownloader = radioPlusWebContentDownloader;
+            _radioPlusDownloadHandler = radioPlusDownloadHandler;
             _dockerContainerHandler = dockerContainerHandler;
         }
 
@@ -26,42 +26,17 @@ namespace RadioPlusScraperWebApi
         {
             var backGroundClient = new BackgroundJobClient();
             var startDockerJobId = backGroundClient.Create(() => _dockerContainerHandler.Start(), new EnqueuedState());
-            var getInfoJobId = backGroundClient.ContinueWith(startDockerJobId, () => DoStart(), new EnqueuedState());
+            var getInfoJobId = backGroundClient.ContinueWith(startDockerJobId, () => _radioPlusDownloadHandler.Start(), new EnqueuedState());
             var stopDockerJobId = backGroundClient.ContinueWith(getInfoJobId, () => _dockerContainerHandler.Stop(), new EnqueuedState());
             backGroundClient.ContinueWith(stopDockerJobId, () => DoScheduleJob(), new EnqueuedState());
         }
 
-        public void DoScheduleJob()
+        private void DoScheduleJob()
         {
-            BackgroundJob.Schedule(() => this.Start(), NextTimeSpan);
+            BackgroundJob.Schedule(() => this.Start(), _radioPlusDownloadHandler.NextTimeSpan);
         }
 
-        public static TimeSpan NextTimeSpan = TimeSpan.FromHours(12);
 
-        public void DoStart()
-        {
-            try
-            {
-                lock (DownloadResultLock)
-                {
-                    var myList = new List<RadioPlusOnDemandData>();
-                    foreach (var radio in RadioPlusConst.AllRadios)
-                    {
-                        var items = _radioPlusWebContentDownloader.GetOnDemandMaterialJson(
-                            WebScrapingProject.RadioPlusConst.GetRadioPlusOnDemandUrl(radio));
-                        myList.AddRange(items);
-                    }
-                    RadioPlusDownloadHandler.DownloadResult = myList.ToArray();
-                    NextTimeSpan = TimeSpan.FromHours(12);
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-                NextTimeSpan = TimeSpan.FromMinutes(2);
-            }
-        }
 
-        private static readonly Object DownloadResultLock = new Object();
     }
 }

@@ -56,9 +56,9 @@ namespace RadioPlusScraperCoreWebApp
             app.UseHangfireServer();
             app.UseHangfireDashboard("/hangfire", new DashboardOptions() { Authorization = new[] { new MyAuthorizationFilter() } });
 
-            var downloadHandler = app.ApplicationServices.GetService<IRadioPlusDownloadHandler>();
+            var downloadOrchestrator = app.ApplicationServices.GetService<IRadioPlusDownloadOrchestrator>();
         
-             BackgroundJob.Enqueue(() => downloadHandler.Start());
+             BackgroundJob.Enqueue(() => downloadOrchestrator.Start());
         }
     }
 
