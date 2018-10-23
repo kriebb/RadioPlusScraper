@@ -16,28 +16,28 @@ namespace Selenium.WebDriver.WaitExtensions.WaitTypeSelections
 
     public ElementWaitTypeSelection(IWebElement webelement, int delayMs)
     {
-      this._webelement = webelement;
-      this._delayMs = delayMs;
+      _webelement = webelement;
+      _delayMs = delayMs;
     }
 
     public ITextWaitConditions ForText()
     {
-      return (ITextWaitConditions) new TextWaitConditions(this._webelement, this._delayMs);
+      return new TextWaitConditions(_webelement, _delayMs);
     }
 
     public IClassWaitConditions ForClasses()
     {
-      return (IClassWaitConditions) new ClassWaitConditions(this._webelement, this._delayMs);
+      return new ClassWaitConditions(_webelement, _delayMs);
     }
 
     public IAttributeWaitConditions ForAttributes()
     {
-      return (IAttributeWaitConditions) new AttributeWaitConditions(this._webelement, this._delayMs);
+      return new AttributeWaitConditions(_webelement, _delayMs);
     }
 
     public IElementWaitConditions ForElement()
     {
-      return (IElementWaitConditions) new ElementWaitConditions(this._webelement, this._delayMs);
+      return new ElementWaitConditions(_webelement, _delayMs);
     }
   }
 }

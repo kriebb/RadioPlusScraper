@@ -23,15 +23,17 @@ namespace WebScrapingProject
 
             var channel = onDemandMaterialData.FirstOrDefault(x => x.CollectionId == channelId);
 
-            var feed = new Feed(title: channelTitle + $"({radio})", description: radio);
-            feed.AlternateLink = channelUrl;
-            feed.Copyright = "vrt";
-            feed.ImageUrl = channel?.Thumb;
-            feed.Author = "vrt";
-            feed.WebMaster = new FeedEmailAddress("info@radioplus.be", "RadioPlus");
-            feed.ImageTitle = channelTitle + $"({radio})";
-            feed.Link = channelUrl;
-            feed.Language = "nl-BE";
+            var feed = new Feed(title: channelTitle + $"({radio})", description: radio)
+            {
+                AlternateLink = channelUrl,
+                Copyright = "vrt",
+                ImageUrl = channel?.Thumb,
+                Author = "vrt",
+                WebMaster = new FeedEmailAddress("info@radioplus.be", "RadioPlus"),
+                ImageTitle = channelTitle + $"({radio})",
+                Link = channelUrl,
+                Language = "nl-BE"
+            };
 
             if (channel == null)
                 return feed.WriteRSS();
@@ -88,7 +90,7 @@ namespace WebScrapingProject
                     return 10;
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return 20;
             }
@@ -97,16 +99,19 @@ namespace WebScrapingProject
 
         public string GetRssString(string radio, string title, string description, RadioPlusOnDemandData[] onDemandMaterialData)
         {
-            var feed = new Feed(title: radio, description: description);
-            feed.AlternateLink = RadioPlusConst.GetRadioPlusOnDemandUrl(radio);
-            feed.Copyright = "vrt";
-            feed.ImageUrl = "https://lh4.ggpht.com/CdCC7h9Ft5sftidozzTWggH9mUwbdBHO_1ZZCuk_O_A_2TpDuxqxqpf9OAE91LpkBw";
-            feed.Author = "vrt";
-            feed.WebMaster = new FeedEmailAddress("info@radioplus.be", "RadioPlus");
-            feed.ImageTitle = title;
-            feed.Link = RadioPlusConst.GetRadioPlusOnDemandUrl(radio);
-            feed.Language = "nl-BE";
-            feed.Title = title;
+            var feed = new Feed(title: radio, description: description)
+            {
+                AlternateLink = RadioPlusConst.GetRadioPlusOnDemandUrl(radio),
+                Copyright = "vrt",
+                ImageUrl =
+                    "https://lh4.ggpht.com/CdCC7h9Ft5sftidozzTWggH9mUwbdBHO_1ZZCuk_O_A_2TpDuxqxqpf9OAE91LpkBw",
+                Author = "vrt",
+                WebMaster = new FeedEmailAddress("info@radioplus.be", "RadioPlus"),
+                ImageTitle = title,
+                Link = RadioPlusConst.GetRadioPlusOnDemandUrl(radio),
+                Language = "nl-BE",
+                Title = title
+            };
             var feedItems = new List<FeedItem>();
 
             foreach (var channel in onDemandMaterialData)

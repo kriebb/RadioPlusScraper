@@ -5,6 +5,7 @@ using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Remote;
 using OpenQA.Selenium.Support.Extensions;
 using RadioPlusOnDemand.Json;
+using RadioPlusScraperWebApi;
 using Selenium.WebDriver.WaitExtensions;
 
 namespace WebScrapingProject
@@ -26,7 +27,7 @@ namespace WebScrapingProject
                 //var listOfObjects = new List<string>();
 
                 var remoteAddress = _configuration["remoteWebDriver:remoteAddress"];
-                using (var driver = new RemoteWebDriver(new Uri(remoteAddress), new ChromeOptions() { AcceptInsecureCertificates = true }))
+                using (var driver = new RemoteWebDriver(new Uri(DockerContainerHandler.ContainerSeleniumUrl), new ChromeOptions() { AcceptInsecureCertificates = true }))
                 {
                     driver.Navigate().GoToUrl(channelUrl);
                     driver.Wait(6000000).ForPage().ReadyStateComplete();

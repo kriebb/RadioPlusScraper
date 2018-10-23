@@ -5,6 +5,7 @@
 // Assembly location: D:\OwnProjects\RadioPlusScraper\RadioPlusScraper\packages\Selenium.WebDriver.WaitExtensions.1.0.0\lib\Selenium.WebDriver.WaitExtensions.dll
 
 using OpenQA.Selenium;
+using Selenium.WebDriver.WaitExtensions.NetStandard.WaitConditions;
 using Selenium.WebDriver.WaitExtensions.WaitConditions;
 
 namespace Selenium.WebDriver.WaitExtensions.WaitTypeSelections
@@ -16,18 +17,18 @@ namespace Selenium.WebDriver.WaitExtensions.WaitTypeSelections
 
     public WaitTypeSelection(IWebDriver webDriver, int waitMs)
     {
-      this._webDriver = webDriver;
-      this._waitMs = waitMs;
+      _webDriver = webDriver;
+      _waitMs = waitMs;
     }
 
     public IWebElementWaitConditions ForElement(By by)
     {
-      return (IWebElementWaitConditions) new WebElementWaitConditions(this._webDriver, this._waitMs, by);
+      return new WebElementWaitConditions(_webDriver, _waitMs, by);
     }
 
     public IWebPageWaitConditions ForPage()
     {
-      return (IWebPageWaitConditions) new WebPageWaitConditions(this._webDriver, this._waitMs);
+      return new WebPageWaitConditions(_webDriver, _waitMs);
     }
   }
 }

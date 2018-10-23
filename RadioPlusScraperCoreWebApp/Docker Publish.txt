@@ -32,9 +32,6 @@ You have logged in. Now let us find all the subscriptions to which you have acce
   }
 ]
 
-C:\WINDOWS\system32>az acr login --name containerRegistry
-The resource with name 'containerRegistry' and type 'Microsoft.ContainerRegistry/registries' could not be found in subscription 'Visual Studio Enterprise – MPN (7ebdeab9-8060-4fe5-b6c5-a522c7f206b6)'.
-
 C:\WINDOWS\system32>az acr login --name seleniumContainerRegistry
 Login Succeeded
 

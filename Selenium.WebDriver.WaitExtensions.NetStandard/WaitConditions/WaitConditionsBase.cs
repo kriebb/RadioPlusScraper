@@ -4,10 +4,10 @@
 // MVID: 4BED2818-318F-460C-8884-74BE363FA75D
 // Assembly location: D:\OwnProjects\RadioPlusScraper\RadioPlusScraper\packages\Selenium.WebDriver.WaitExtensions.1.0.0\lib\Selenium.WebDriver.WaitExtensions.dll
 
-using OpenQA.Selenium;
 using System;
 using System.Diagnostics;
 using System.Threading;
+using OpenQA.Selenium;
 
 namespace Selenium.WebDriver.WaitExtensions.WaitConditions
 {
@@ -18,7 +18,7 @@ namespace Selenium.WebDriver.WaitExtensions.WaitConditions
 
     protected WaitConditionsBase(int waitMs)
     {
-      this._waitMs = waitMs;
+      _waitMs = waitMs;
     }
 
     protected bool WaitFor(Func<bool> test, string exceptionMessage = "Waiting for Text to change.")
@@ -27,11 +27,11 @@ namespace Selenium.WebDriver.WaitExtensions.WaitConditions
       stopwatch.Start();
       if (test())
         return true;
-      while (stopwatch.ElapsedMilliseconds <= (long) this._waitMs)
+      while (stopwatch.ElapsedMilliseconds <= _waitMs)
       {
         if (test())
           return true;
-        Thread.Sleep(this._interval);
+        Thread.Sleep(_interval);
       }
       throw new WebDriverTimeoutException(exceptionMessage);
     }

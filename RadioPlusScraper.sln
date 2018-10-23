@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RadioPlusScraperNetStandard
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Selenium.WebDriver.WaitExtensions.NetStandard", "Selenium.WebDriver.WaitExtensions.NetStandard\Selenium.WebDriver.WaitExtensions.NetStandard.csproj", "{5EFFF0F8-34FC-4033-88C9-9A68CE39DE39}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RadioPlusScraper.Docker.Spike", "..\RadioPlusScraper.Docker.Spike\RadioPlusScraper.Docker.Spike.csproj", "{042882EA-D029-4798-8EB0-8990A0CA300B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -32,6 +34,10 @@ Global
 		{5EFFF0F8-34FC-4033-88C9-9A68CE39DE39}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5EFFF0F8-34FC-4033-88C9-9A68CE39DE39}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5EFFF0F8-34FC-4033-88C9-9A68CE39DE39}.Release|Any CPU.Build.0 = Release|Any CPU
+		{042882EA-D029-4798-8EB0-8990A0CA300B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{042882EA-D029-4798-8EB0-8990A0CA300B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{042882EA-D029-4798-8EB0-8990A0CA300B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{042882EA-D029-4798-8EB0-8990A0CA300B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

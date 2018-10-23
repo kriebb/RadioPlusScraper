@@ -5,16 +5,16 @@ using WebScrapingProject;
 
 namespace RadioPlusScraperCoreWebApp
 {
-    internal class RadioPlusDownloadHandler : IRadioPlusDownloadHandler
+    public class RadioPlusDownloadHandler : IRadioPlusDownloadHandler
     {
         private readonly IRadioPlusWebContentDownloader _radioPlusWebContentDownloader;
 
         public RadioPlusDownloadHandler(IRadioPlusWebContentDownloader radioPlusWebContentDownloader)
         {
-            this._radioPlusWebContentDownloader = radioPlusWebContentDownloader;
+            _radioPlusWebContentDownloader = radioPlusWebContentDownloader;
         }
 
-        public static RadioPlusOnDemandData[] DownloadResult { get; set; } = new RadioPlusOnDemandData[0];
+        public static RadioPlusOnDemandData[] DownloadResult { get; private set; } = new RadioPlusOnDemandData[0];
 
         public void Start()
         {

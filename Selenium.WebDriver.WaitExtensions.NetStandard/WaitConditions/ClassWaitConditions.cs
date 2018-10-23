@@ -4,12 +4,10 @@
 // MVID: 4BED2818-318F-460C-8884-74BE363FA75D
 // Assembly location: D:\OwnProjects\RadioPlusScraper\RadioPlusScraper\packages\Selenium.WebDriver.WaitExtensions.1.0.0\lib\Selenium.WebDriver.WaitExtensions.dll
 
-using OpenQA.Selenium;
-using Selenium.WebDriver.WaitExtensions.WaitTypeSelections;
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using OpenQA.Selenium;
+using Selenium.WebDriver.WaitExtensions.WaitTypeSelections;
 
 namespace Selenium.WebDriver.WaitExtensions.WaitConditions
 {
@@ -20,39 +18,39 @@ namespace Selenium.WebDriver.WaitExtensions.WaitConditions
     public ClassWaitConditions(IWebElement webelement, int delayMs)
       : base(delayMs)
     {
-      this._webelement = webelement;
+      _webelement = webelement;
     }
 
     public bool ToContain(string className)
     {
-      return this.WaitFor((Func<bool>) (() => ((IEnumerable<string>) this.GetClasses()).Contains<string>(className)), "Waiting for Text to change.");
+      return WaitFor(() => GetClasses().Contains(className), "Waiting for Text to change.");
     }
 
     private string[] GetClasses()
     {
-      return this._webelement.GetAttribute("class").Split(' ');
+      return _webelement.GetAttribute("class").Split(' ');
     }
 
     public bool ToContainMatch(string regexPattern)
     {
       Regex regex = new Regex(regexPattern);
-      return this.WaitFor((Func<bool>) (() => ((IEnumerable<string>) this.GetClasses()).Any<string>((Func<string, bool>) (cn => regex.Match(cn).Success))), this.ClassesString());
+      return WaitFor(() => GetClasses().Any(cn => regex.Match(cn).Success), ClassesString());
     }
 
     public bool ToNotContain(string className)
     {
-      return this.WaitFor((Func<bool>) (() => !this.ToContain(className)), this.ClassesString());
+      return WaitFor(() => !ToContain(className), ClassesString());
     }
 
     public bool ToNotContainMatch(string regexPattern)
     {
       Regex regex = new Regex(regexPattern);
-      return this.WaitFor((Func<bool>) (() => ((IEnumerable<string>) this.GetClasses()).All<string>((Func<string, bool>) (cn => !regex.Match(cn).Success))), this.ClassesString());
+      return WaitFor(() => GetClasses().All(cn => !regex.Match(cn).Success), ClassesString());
     }
 
     private string ClassesString()
     {
-      return "classes;\n   " + this._webelement.GetAttribute("class");
+      return "classes;\n   " + _webelement.GetAttribute("class");
     }
   }
 }

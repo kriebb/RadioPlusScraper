@@ -13,7 +13,7 @@ namespace Selenium.WebDriver.WaitExtensions
   {
     public static IWaitTypeSelection Wait(this IWebDriver webDriver, int ms = 500)
     {
-      return (IWaitTypeSelection) new WaitTypeSelection(webDriver, ms);
+      return new WaitTypeSelection(webDriver, ms);
     }
   }
 }

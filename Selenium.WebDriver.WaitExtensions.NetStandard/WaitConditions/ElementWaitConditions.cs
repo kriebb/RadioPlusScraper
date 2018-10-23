@@ -5,7 +5,6 @@
 // Assembly location: D:\OwnProjects\RadioPlusScraper\RadioPlusScraper\packages\Selenium.WebDriver.WaitExtensions.1.0.0\lib\Selenium.WebDriver.WaitExtensions.dll
 
 using OpenQA.Selenium;
-using System;
 
 namespace Selenium.WebDriver.WaitExtensions.WaitConditions
 {
@@ -16,37 +15,37 @@ namespace Selenium.WebDriver.WaitExtensions.WaitConditions
     public ElementWaitConditions(IWebElement webelement, int waitMs)
       : base(waitMs)
     {
-      this._webelement = webelement;
+      _webelement = webelement;
     }
 
     public void ToBeVisible()
     {
-      this.WaitFor((Func<bool>) (() => this._webelement.Displayed), "Waiting for Text to change.");
+      WaitFor(() => _webelement.Displayed, "Waiting for Text to change.");
     }
 
     public void ToBeInvisible()
     {
-      this.WaitFor((Func<bool>) (() => !this._webelement.Displayed), "Waiting for Text to change.");
+      WaitFor(() => !_webelement.Displayed, "Waiting for Text to change.");
     }
 
     public void ToBeDisabled()
     {
-      this.WaitFor((Func<bool>) (() => !this._webelement.Enabled), "Waiting for Text to change.");
+      WaitFor(() => !_webelement.Enabled, "Waiting for Text to change.");
     }
 
     public void ToBeEnabled()
     {
-      this.WaitFor((Func<bool>) (() => this._webelement.Enabled), "Waiting for Text to change.");
+      WaitFor(() => _webelement.Enabled, "Waiting for Text to change.");
     }
 
     public void ToBeSelected()
     {
-      this.WaitFor((Func<bool>) (() => this._webelement.Selected), "Waiting for Text to change.");
+      WaitFor(() => _webelement.Selected, "Waiting for Text to change.");
     }
 
     public void ToNotBeSelected()
     {
-      this.WaitFor((Func<bool>) (() => !this._webelement.Selected), "Waiting for Text to change.");
+      WaitFor(() => !_webelement.Selected, "Waiting for Text to change.");
     }
   }
 }
