@@ -18,10 +18,10 @@ namespace RadioPlusScraperWebApi
         public void Start()
         {
             var backGroundClient = new BackgroundJobClient();
-            var startDockerJobId = backGroundClient.Create(() => _dockerContainerHandler.Start(), new EnqueuedState(_radioPlusDownloadHandler.NextTimeSpan.ToString().Replace(":", "_")));
-            var getInfoJobId = backGroundClient.ContinueWith(startDockerJobId, () => _radioPlusDownloadHandler.Start(), new EnqueuedState(_radioPlusDownloadHandler.NextTimeSpan.ToString().Replace(":", "_")));
-            var stopDockerJobId = backGroundClient.ContinueWith(getInfoJobId, () => _dockerContainerHandler.Stop(), new EnqueuedState(_radioPlusDownloadHandler.NextTimeSpan.ToString().Replace(":", "_")));
-            backGroundClient.ContinueWith(stopDockerJobId, () => DoScheduleJob(), new EnqueuedState(_radioPlusDownloadHandler.NextTimeSpan.ToString().Replace(":", "_")));
+            var startDockerJobId = backGroundClient.Create(() => _dockerContainerHandler.Start(),   new EnqueuedState("Download"));
+            var getInfoJobId = backGroundClient.ContinueWith(startDockerJobId, () => _radioPlusDownloadHandler.Start(), new EnqueuedState("Download"));
+            var stopDockerJobId = backGroundClient.ContinueWith(getInfoJobId, () => _dockerContainerHandler.Stop(), new EnqueuedState("Download"));
+            backGroundClient.ContinueWith(stopDockerJobId, () => DoScheduleJob(), new EnqueuedState("Download"));
         }
 
         public void DoScheduleJob()

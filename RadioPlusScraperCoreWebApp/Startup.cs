@@ -64,7 +64,7 @@ namespace RadioPlusScraperCoreWebApp
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseHangfireServer();
+            app.UseHangfireServer(new BackgroundJobServerOptions() { Queues = new string[] { "Download" } });
             app.UseHangfireDashboard("/hangfire", new DashboardOptions { Authorization = new[] { new MyAuthorizationFilter() } });
 
 
@@ -98,7 +98,7 @@ namespace RadioPlusScraperCoreWebApp
         {
             _logger.LogInformation("Timed Background Service is starting.");
 
-            BackgroundJob.Schedule(() => _orchestrator.Start(),TimeSpan.Zero);
+            BackgroundJob.Schedule(() => _orchestrator.Start(), TimeSpan.Zero);
 
             return Task.CompletedTask;
         }
