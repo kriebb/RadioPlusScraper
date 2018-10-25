@@ -1,4 +1,6 @@
-﻿using Hangfire.Console;
+﻿using System;
+using System.Linq;
+using Hangfire.Console;
 using Hangfire.Server;
 using Microsoft.Azure.Management.ContainerInstance.Fluent;
 using Microsoft.Azure.Management.ContainerInstance.Fluent.Models;
@@ -8,10 +10,8 @@ using Microsoft.Azure.Management.ResourceManager.Fluent;
 using Microsoft.Azure.Management.ResourceManager.Fluent.Authentication;
 using Microsoft.Azure.Management.ResourceManager.Fluent.Core;
 using Microsoft.Rest.TransientFaultHandling;
-using System;
-using System.Linq;
 
-namespace RadioPlusScraperWebApi
+namespace RadioPlusScraperCoreWebApp.DockerManagement
 {
     public class DockerContainerHandler : IDockerContainerHandler
     {

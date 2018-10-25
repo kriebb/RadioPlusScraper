@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace RadioPlusScraperWebApi
+namespace RadioPlusScraperCoreWebApp.DockerManagement
 {
     internal class CouldNotStartDockerException : Exception
     {

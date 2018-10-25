@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
-using RadioPlusScraperCoreWebApp;
+using RadioPlusScraperCoreWebApp.RadioPlusManagement.Impl;
+using RadioPlusScraperCoreWebApp.RssManagement.Controllers.Dtos;
 using WebScrapingProject;
 
-namespace RadioPlusScraperWebApi.Controllers
+namespace RadioPlusScraperCoreWebApp.RssManagement.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]

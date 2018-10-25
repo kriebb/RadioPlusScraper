@@ -1,23 +1,13 @@
 ﻿using Hangfire;
 using Hangfire.Console;
 using Hangfire.Server;
-using RadioPlusScraperCoreWebApp;
-using System;
+using RadioPlusScraperCoreWebApp.DockerManagement;
+using RadioPlusScraperCoreWebApp.EntryPoint;
+using RadioPlusScraperCoreWebApp.RadioPlusManagement;
+using RadioPlusScraperCoreWebApp.RadioPlusManagement.Impl;
 
-namespace RadioPlusScraperWebApi
+namespace RadioPlusScraperCoreWebApp.JobsOrchestrationManagement
 {
-    public class RadioPlusDownloadScheduler : IRadioPlusDownloadScheduler
-    {
-        public void ScheduleJob(TimeSpan timeSpan, PerformContext context = null)
-        {
-            BackgroundJob.Schedule<IRadioPlusDownloadOrchestrator>(x => x.Start(null), timeSpan);
-        }
-    }
-
-    public interface IRadioPlusDownloadScheduler
-    {
-        void ScheduleJob(TimeSpan timeSpan, PerformContext context = null);
-    }
     public class RadioPlusDownloadOrchestrator : IRadioPlusDownloadOrchestrator
     {
         [Hangfire.DisableConcurrentExecution(300)]

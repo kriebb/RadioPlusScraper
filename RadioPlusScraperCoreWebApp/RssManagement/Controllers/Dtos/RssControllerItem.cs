@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace RadioPlusScraperWebApi.Controllers
+namespace RadioPlusScraperCoreWebApp.RssManagement.Controllers.Dtos
 {
     public class RssControllerItem
     {

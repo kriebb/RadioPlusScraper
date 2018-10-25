@@ -1,11 +1,11 @@
-﻿using Hangfire.Console;
+﻿using System;
+using System.Collections.Generic;
+using Hangfire.Console;
 using Hangfire.Server;
 using RadioPlusOnDemand.Json;
-using System;
-using System.Collections.Generic;
 using WebScrapingProject;
 
-namespace RadioPlusScraperCoreWebApp
+namespace RadioPlusScraperCoreWebApp.RadioPlusManagement.Impl
 {
     public class RadioPlusDownloadHandler : IRadioPlusDownloadHandler
     {

@@ -1,6 +1,6 @@
 ﻿using Hangfire.Server;
 
-namespace RadioPlusScraperWebApi
+namespace RadioPlusScraperCoreWebApp.DockerManagement
 {
     public interface IDockerContainerHandler
     {

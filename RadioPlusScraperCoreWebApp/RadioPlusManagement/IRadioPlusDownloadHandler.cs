@@ -1,7 +1,6 @@
-﻿using System;
-using Hangfire.Server;
+﻿using Hangfire.Server;
 
-namespace RadioPlusScraperCoreWebApp
+namespace RadioPlusScraperCoreWebApp.RadioPlusManagement
 {
     public interface IRadioPlusDownloadHandler
     {

@@ -1,6 +1,6 @@
 ﻿using Hangfire.Server;
 
-namespace RadioPlusScraperWebApi
+namespace RadioPlusScraperCoreWebApp.JobsOrchestrationManagement
 {
     public interface IRadioPlusDownloadOrchestrator
     {

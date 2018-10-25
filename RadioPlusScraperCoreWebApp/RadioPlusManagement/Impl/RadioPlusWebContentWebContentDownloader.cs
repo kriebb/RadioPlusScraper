@@ -1,15 +1,16 @@
-﻿using Hangfire.Console;
+﻿using System;
+using Hangfire.Console;
 using Hangfire.Server;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Remote;
 using OpenQA.Selenium.Support.Extensions;
 using RadioPlusOnDemand.Json;
-using RadioPlusScraperWebApi;
+using RadioPlusScraperCoreWebApp.DockerManagement;
 using Selenium.WebDriver.WaitExtensions;
-using System;
+using WebScrapingProject;
 
-namespace WebScrapingProject
+namespace RadioPlusScraperCoreWebApp.RadioPlusManagement.Impl
 {
     public class RadioPlusWebContentWebContentDownloader : IRadioPlusWebContentDownloader
     {

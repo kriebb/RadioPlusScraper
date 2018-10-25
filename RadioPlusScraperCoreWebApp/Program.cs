@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using RadioPlusScraperCoreWebApp.EntryPoint;
 
 namespace RadioPlusScraperCoreWebApp
 {
