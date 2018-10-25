@@ -1,6 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Hangfire.Console;
+using Hangfire.Server;
 using RadioPlusOnDemand.Json;
+using System;
+using System.Collections.Generic;
 using WebScrapingProject;
 
 namespace RadioPlusScraperCoreWebApp
@@ -16,44 +18,59 @@ namespace RadioPlusScraperCoreWebApp
 
         public static RadioPlusOnDemandData[] DownloadResult { get; private set; } = new RadioPlusOnDemandData[0];
 
-        public void Start()
+        public void Start(PerformContext context = null)
         {
-            DoStart();
+            DoStart(context);
         }
 
 
-        private void DoStart()
+        private void DoStart(PerformContext context)
         {
             try
             {
                 lock (DownloadResultLock)
                 {
-                    var myList = new List<RadioPlusOnDemandData>();
-                    foreach (var radio in RadioPlusConst.AllRadios)
+                    Hangfire.Console.Progress.IProgressBar bar = context.WriteProgressBar("Radios");
+                    List<RadioPlusOnDemandData> myList = new List<RadioPlusOnDemandData>();
+                    foreach (string radio in RadioPlusConst.AllRadios.WithProgress(bar))
                     {
-                        var items = _radioPlusWebContentDownloader.GetOnDemandMaterialJson(
-                            RadioPlusConst.GetRadioPlusOnDemandUrl(radio));
-                        myList.AddRange(items);
+                        try
+                        {
+                            context.WriteLine($"Getting GetOnDemandMaterialJson for radio {radio}");
+                            string url = RadioPlusConst.GetRadioPlusOnDemandUrl(radio);
+                            context.WriteLine($"Asking items at url {url}");
+                            RadioPlusOnDemandData[] items = _radioPlusWebContentDownloader.GetOnDemandMaterialJson(url,context);
+                            myList.AddRange(items);
+                        }
+                        catch (Exception e)
+                        {
+                            context.SetTextColor(ConsoleTextColor.DarkRed);
+                            context.WriteLine($"An error occured while trying to download the information for radio {radio}");
+                            context.WriteLine(e.Message);
+                            context.WriteLine(e.StackTrace);
+                            context.ResetTextColor();
+                        }
                     }
                     DownloadResult = myList.ToArray();
                     NextTimeSpan = TimeSpan.FromHours(12);
+
                 }
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
+                context.SetTextColor(ConsoleTextColor.DarkRed);
+                context.WriteLine($"An error occured while trying to download the information");
+                context.WriteLine(e.Message);
+                context.WriteLine(e.StackTrace);
+                context.ResetTextColor();
+
                 NextTimeSpan = TimeSpan.FromMinutes(2);
             }
         }
 
-        private static TimeSpan _nextTimeSpan = TimeSpan.FromHours(12);
-        public TimeSpan NextTimeSpan
-        {
-            get => _nextTimeSpan;
-            private set => _nextTimeSpan = value;
-        } 
+        public static TimeSpan NextTimeSpan { get; private set; } = TimeSpan.FromHours(12);
 
 
-        private static readonly Object DownloadResultLock = new Object();
+        private static readonly object DownloadResultLock = new object();
     }
 }

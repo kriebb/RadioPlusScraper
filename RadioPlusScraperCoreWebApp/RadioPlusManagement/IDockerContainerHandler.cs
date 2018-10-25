@@ -1,8 +1,11 @@
-﻿namespace RadioPlusScraperWebApi
+﻿using Hangfire.Server;
+
+namespace RadioPlusScraperWebApi
 {
     public interface IDockerContainerHandler
     {
-        void Start();
-        void Stop();
+
+        void Start(PerformContext context = null);
+        void Stop(PerformContext context = null);
     }
 }

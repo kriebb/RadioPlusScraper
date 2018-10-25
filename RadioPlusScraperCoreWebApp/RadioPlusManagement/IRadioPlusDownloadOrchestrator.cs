@@ -1,7 +1,9 @@
-﻿namespace RadioPlusScraperWebApi
+﻿using Hangfire.Server;
+
+namespace RadioPlusScraperWebApi
 {
     public interface IRadioPlusDownloadOrchestrator
     {
-        void Start();
+        void Start(PerformContext context = null);
     }
 }

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using Hangfire;
-using Hangfire.AspNetCore;
+﻿using Hangfire;
 using Hangfire.Dashboard;
 using Hangfire.MemoryStorage;
 using Microsoft.AspNetCore.Builder;
@@ -12,6 +8,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using RadioPlusScraperWebApi;
+using System;
+using System.Diagnostics;
+using System.Threading;
+using System.Threading.Tasks;
+using Hangfire.Console;
 using WebScrapingProject;
 using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
@@ -21,7 +22,7 @@ namespace RadioPlusScraperCoreWebApp
     {
         public Startup(IHostingEnvironment env)
         {
-            var builder = new ConfigurationBuilder();
+            ConfigurationBuilder builder = new ConfigurationBuilder();
 
             builder.SetBasePath(env.ContentRootPath)
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
@@ -40,10 +41,11 @@ namespace RadioPlusScraperCoreWebApp
             services.AddHangfire(globalConfig =>
             {
                 globalConfig.UseMemoryStorage();
-
+                globalConfig.UseConsole();
 
             });
-            services.AddMvc().AddControllersAsServices();
+            services.AddMvc().AddControllersAsServices().WithRazorPagesAtContentRoot();
+
             services.AddLogging(builder =>
                 builder.AddDebug().AddConsole().AddAzureWebAppDiagnostics());
             services.AddHostedService<InitRadioPlusOrchestratorHostedService>();
@@ -51,6 +53,8 @@ namespace RadioPlusScraperCoreWebApp
             services.AddSingleton<IRadioPlusWebContentDownloader, RadioPlusWebContentWebContentDownloader>();
             services.AddSingleton<IRadioPlusDownloadHandler, RadioPlusDownloadHandler>();
             services.AddSingleton<IRadioPlusDownloadOrchestrator, RadioPlusDownloadOrchestrator>();
+            services.AddSingleton<IRadioPlusDownloadScheduler, RadioPlusDownloadScheduler>();
+
             services.AddSingleton<IDockerContainerHandler, DockerContainerHandler>();
             services.AddSingleton<IConfiguration>(serviceProvider => Configuration);
         }
@@ -64,9 +68,9 @@ namespace RadioPlusScraperCoreWebApp
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseHangfireServer(new BackgroundJobServerOptions() { Queues = new string[] { "Download" } });
+            app.UseHangfireServer(new BackgroundJobServerOptions() { Queues = new string[] { "Download", "default" }, WorkerCount = 1 });
             app.UseHangfireDashboard("/hangfire", new DashboardOptions { Authorization = new[] { new MyAuthorizationFilter() } });
-
+            app.UseMvc();
 
         }
     }
@@ -75,7 +79,7 @@ namespace RadioPlusScraperCoreWebApp
     {
         public bool Authorize(DashboardContext context)
         {
-            var httpContext = context.GetHttpContext();
+            Microsoft.AspNetCore.Http.HttpContext httpContext = context.GetHttpContext();
 
             // Allow all authenticated users to see the Dashboard (potentially dangerous).
             //return httpContext.User.Identity.IsAuthenticated;
@@ -86,19 +90,27 @@ namespace RadioPlusScraperCoreWebApp
     internal class InitRadioPlusOrchestratorHostedService : IHostedService, IDisposable
     {
         private readonly ILogger _logger;
-        private readonly IRadioPlusDownloadOrchestrator _orchestrator;
+        private readonly IRadioPlusDownloadScheduler _scheduler;
 
-        public InitRadioPlusOrchestratorHostedService(ILogger<InitRadioPlusOrchestratorHostedService> logger, IRadioPlusDownloadOrchestrator orchestrator)
+        public InitRadioPlusOrchestratorHostedService(ILogger<InitRadioPlusOrchestratorHostedService> logger, IRadioPlusDownloadScheduler scheduler)
         {
             _logger = logger;
-            _orchestrator = orchestrator;
+            _scheduler = scheduler;
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
             _logger.LogInformation("Timed Background Service is starting.");
 
-            BackgroundJob.Schedule(() => _orchestrator.Start(), TimeSpan.Zero);
+            try
+            {
+                _scheduler.ScheduleJob(TimeSpan.Zero);
+
+            }
+            catch (Exception e)
+            {
+                Trace.Fail("Could not start the Orchestrator", e.Message + System.Environment.NewLine + e.StackTrace);
+            }
 
             return Task.CompletedTask;
         }

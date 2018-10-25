@@ -7,11 +7,9 @@ using WebScrapingProject;
 
 namespace RadioPlusScraperWebApi.Controllers
 {
-    [Route("api/[controller]/[action]")]
-    public class BaseApiController : Controller
-    { }
-
-    public class RssController : BaseApiController
+    [ApiController]
+    [Route("api/[controller]")]
+    public class RssController : ControllerBase
     {
         private readonly RssControllerItem[] _rssItemsDoDownload;
 
@@ -74,12 +72,11 @@ namespace RadioPlusScraperWebApi.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetRaw()
+        public IActionResult Get()
         {
             return Ok(RadioPlusDownloadHandler.DownloadResult);
         }
-        [HttpGet]
-
+        [HttpGet("{name}")]
         public IActionResult Get(string name)
         {
             try
