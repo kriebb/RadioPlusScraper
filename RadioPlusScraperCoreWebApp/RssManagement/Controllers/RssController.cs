@@ -77,6 +77,7 @@ namespace RadioPlusScraperCoreWebApp.RssManagement.Controllers
         {
             return Ok(RadioPlusDownloadHandler.DownloadResult);
         }
+
         [HttpGet("{name}")]
         public IActionResult Get(string name)
         {
@@ -84,8 +85,12 @@ namespace RadioPlusScraperCoreWebApp.RssManagement.Controllers
             {
                 var entry = new RssManager();
 
-                var rssCollectionToDownload = _rssItemsDoDownload.FirstOrDefault(x => x.NameId?.ToLower() == name?.ToLower());
-                var result = rssCollectionToDownload == null ? "Please specify a name" : entry.GetRssString(rssCollectionToDownload.RadioStation, rssCollectionToDownload.Title, rssCollectionToDownload.ChannelId, RadioPlusDownloadHandler.DownloadResult);
+                var rssCollectionToDownload =
+                    _rssItemsDoDownload.FirstOrDefault(x => x.NameId?.ToLower() == name?.ToLower());
+                var result = rssCollectionToDownload == null
+                    ? "Please specify a name"
+                    : entry.GetRssString(rssCollectionToDownload.RadioStation, rssCollectionToDownload.Title,
+                        rssCollectionToDownload.ChannelId, RadioPlusDownloadHandler.DownloadResult);
                 return Ok(result);
             }
             catch (Exception e)
@@ -93,6 +98,5 @@ namespace RadioPlusScraperCoreWebApp.RssManagement.Controllers
                 return BadRequest(e);
             }
         }
-
     }
 }

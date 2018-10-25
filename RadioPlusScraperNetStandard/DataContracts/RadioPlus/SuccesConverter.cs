@@ -5,7 +5,12 @@ namespace RadioPlus.Json
 {
     internal class SuccesConverter : JsonConverter
     {
-        public override bool CanConvert(Type t) => t == typeof(Succes) || t == typeof(Succes?);
+        public static readonly SuccesConverter Singleton = new SuccesConverter();
+
+        public override bool CanConvert(Type t)
+        {
+            return t == typeof(Succes) || t == typeof(Succes?);
+        }
 
         public override object ReadJson(JsonReader reader, Type t, object existingValue, JsonSerializer serializer)
         {
@@ -18,6 +23,7 @@ namespace RadioPlus.Json
                 case "Bedankt voor uw reactie!":
                     return Succes.BedanktVoorUwReactie;
             }
+
             throw new Exception("Cannot unmarshal type Succes");
         }
 
@@ -28,7 +34,8 @@ namespace RadioPlus.Json
                 serializer.Serialize(writer, null);
                 return;
             }
-            var value = (Succes)untypedValue;
+
+            var value = (Succes) untypedValue;
             switch (value)
             {
                 case Succes.BedanktVoorJeReactie:
@@ -38,9 +45,8 @@ namespace RadioPlus.Json
                     serializer.Serialize(writer, "Bedankt voor uw reactie!");
                     return;
             }
+
             throw new Exception("Cannot marshal type Succes");
         }
-
-        public static readonly SuccesConverter Singleton = new SuccesConverter();
     }
 }

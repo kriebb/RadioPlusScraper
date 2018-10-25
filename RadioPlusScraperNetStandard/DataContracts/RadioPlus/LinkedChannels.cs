@@ -2,10 +2,9 @@
 
 namespace RadioPlus.Json
 {
-    public partial class LinkedChannels
+    public class LinkedChannels
     {
-        [JsonProperty("current")]
-        public string Current { get; set; }
+        [JsonProperty("current")] public string Current { get; set; }
 
         [JsonProperty("channels")]
         [JsonConverter(typeof(DecodeArrayConverter))]

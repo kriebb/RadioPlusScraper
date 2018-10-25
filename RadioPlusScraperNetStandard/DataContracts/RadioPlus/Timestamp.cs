@@ -2,9 +2,8 @@
 
 namespace RadioPlusOnDemand.Json
 {
-    public partial class Timestamp
+    public class Timestamp
     {
-        [JsonProperty("start")]
-        public Start Start { get; set; }
+        [JsonProperty("start")] public Start Start { get; set; }
     }
 }

@@ -15,8 +15,8 @@ namespace Selenium.WebDriver.WaitExtensions.NetStandard.WaitConditions
 {
     public class WebPageWaitConditions : IWebPageWaitConditions
     {
-        private readonly IWebDriver _webDriver;
         private readonly int _waitMs;
+        private readonly IWebDriver _webDriver;
 
         public WebPageWaitConditions(IWebDriver webDriver, int waitMs)
         {
@@ -31,7 +31,8 @@ namespace Selenium.WebDriver.WaitExtensions.NetStandard.WaitConditions
 
         public void TitleToContain(string title)
         {
-            new WebDriverWait(_webDriver, TimeSpan.FromMilliseconds(_waitMs)).Until(ExpectedConditions.TitleContains(title));
+            new WebDriverWait(_webDriver, TimeSpan.FromMilliseconds(_waitMs)).Until(
+                ExpectedConditions.TitleContains(title));
         }
 
         public void UrlToEqual(string url)
@@ -41,17 +42,20 @@ namespace Selenium.WebDriver.WaitExtensions.NetStandard.WaitConditions
 
         public void UrlToContain(string url)
         {
-            new WebDriverWait(_webDriver, TimeSpan.FromMilliseconds(_waitMs)).Until(ExpectedConditions.UrlContains(url));
+            new WebDriverWait(_webDriver, TimeSpan.FromMilliseconds(_waitMs))
+                .Until(ExpectedConditions.UrlContains(url));
         }
 
         public void UrlToMatch(string regex)
         {
-            new WebDriverWait(_webDriver, TimeSpan.FromMilliseconds(_waitMs)).Until(ExpectedConditions.UrlMatches(regex));
+            new WebDriverWait(_webDriver, TimeSpan.FromMilliseconds(_waitMs)).Until(
+                ExpectedConditions.UrlMatches(regex));
         }
 
         public void ReadyStateComplete()
         {
-            new WebDriverWait(_webDriver, TimeSpan.FromMilliseconds(_waitMs)).Until(driver => ((IJavaScriptExecutor)driver).ExecuteScript("return document.readyState").Equals("complete"));
+            new WebDriverWait(_webDriver, TimeSpan.FromMilliseconds(_waitMs)).Until(driver =>
+                ((IJavaScriptExecutor) driver).ExecuteScript("return document.readyState").Equals("complete"));
         }
     }
 }

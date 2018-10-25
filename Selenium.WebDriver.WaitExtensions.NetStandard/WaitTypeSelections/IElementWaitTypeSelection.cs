@@ -8,14 +8,14 @@ using Selenium.WebDriver.WaitExtensions.WaitConditions;
 
 namespace Selenium.WebDriver.WaitExtensions.WaitTypeSelections
 {
-  public interface IElementWaitTypeSelection
-  {
-    ITextWaitConditions ForText();
+    public interface IElementWaitTypeSelection
+    {
+        ITextWaitConditions ForText();
 
-    IClassWaitConditions ForClasses();
+        IClassWaitConditions ForClasses();
 
-    IAttributeWaitConditions ForAttributes();
+        IAttributeWaitConditions ForAttributes();
 
-    IElementWaitConditions ForElement();
-  }
+        IElementWaitConditions ForElement();
+    }
 }

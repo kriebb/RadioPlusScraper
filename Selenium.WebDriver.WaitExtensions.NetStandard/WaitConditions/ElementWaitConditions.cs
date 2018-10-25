@@ -8,44 +8,44 @@ using OpenQA.Selenium;
 
 namespace Selenium.WebDriver.WaitExtensions.WaitConditions
 {
-  public class ElementWaitConditions : WaitConditionsBase, IElementWaitConditions
-  {
-    private readonly IWebElement _webelement;
-
-    public ElementWaitConditions(IWebElement webelement, int waitMs)
-      : base(waitMs)
+    public class ElementWaitConditions : WaitConditionsBase, IElementWaitConditions
     {
-      _webelement = webelement;
-    }
+        private readonly IWebElement _webelement;
 
-    public void ToBeVisible()
-    {
-      WaitFor(() => _webelement.Displayed, "Waiting for Text to change.");
-    }
+        public ElementWaitConditions(IWebElement webelement, int waitMs)
+            : base(waitMs)
+        {
+            _webelement = webelement;
+        }
 
-    public void ToBeInvisible()
-    {
-      WaitFor(() => !_webelement.Displayed, "Waiting for Text to change.");
-    }
+        public void ToBeVisible()
+        {
+            WaitFor(() => _webelement.Displayed, "Waiting for Text to change.");
+        }
 
-    public void ToBeDisabled()
-    {
-      WaitFor(() => !_webelement.Enabled, "Waiting for Text to change.");
-    }
+        public void ToBeInvisible()
+        {
+            WaitFor(() => !_webelement.Displayed, "Waiting for Text to change.");
+        }
 
-    public void ToBeEnabled()
-    {
-      WaitFor(() => _webelement.Enabled, "Waiting for Text to change.");
-    }
+        public void ToBeDisabled()
+        {
+            WaitFor(() => !_webelement.Enabled, "Waiting for Text to change.");
+        }
 
-    public void ToBeSelected()
-    {
-      WaitFor(() => _webelement.Selected, "Waiting for Text to change.");
-    }
+        public void ToBeEnabled()
+        {
+            WaitFor(() => _webelement.Enabled, "Waiting for Text to change.");
+        }
 
-    public void ToNotBeSelected()
-    {
-      WaitFor(() => !_webelement.Selected, "Waiting for Text to change.");
+        public void ToBeSelected()
+        {
+            WaitFor(() => _webelement.Selected, "Waiting for Text to change.");
+        }
+
+        public void ToNotBeSelected()
+        {
+            WaitFor(() => !_webelement.Selected, "Waiting for Text to change.");
+        }
     }
-  }
 }

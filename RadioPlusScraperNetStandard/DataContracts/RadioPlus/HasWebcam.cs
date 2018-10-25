@@ -2,9 +2,8 @@
 
 namespace RadioPlus.Json
 {
-    public partial class HasWebcam
+    public class HasWebcam
     {
-        [JsonProperty("webcamId")]
-        public string WebcamId { get; set; }
+        [JsonProperty("webcamId")] public string WebcamId { get; set; }
     }
 }

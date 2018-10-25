@@ -5,7 +5,12 @@ namespace RadioPlusOnDemand.Json
 {
     internal class HourRoundConverter : JsonConverter
     {
-        public override bool CanConvert(Type t) => t == typeof(HourRound) || t == typeof(HourRound?);
+        public static readonly HourRoundConverter Singleton = new HourRoundConverter();
+
+        public override bool CanConvert(Type t)
+        {
+            return t == typeof(HourRound) || t == typeof(HourRound?);
+        }
 
         public override object ReadJson(JsonReader reader, Type t, object existingValue, JsonSerializer serializer)
         {
@@ -64,7 +69,8 @@ namespace RadioPlusOnDemand.Json
                 case "24:00":
                     return HourRound.The2400;
             }
-            throw new Exception("Cannot unmarshal type HourRound:"+value);
+
+            throw new Exception("Cannot unmarshal type HourRound:" + value);
         }
 
         public override void WriteJson(JsonWriter writer, object untypedValue, JsonSerializer serializer)
@@ -74,7 +80,8 @@ namespace RadioPlusOnDemand.Json
                 serializer.Serialize(writer, null);
                 return;
             }
-            var value = (HourRound)untypedValue;
+
+            var value = (HourRound) untypedValue;
             switch (value)
             {
                 case HourRound.The0200:
@@ -132,9 +139,8 @@ namespace RadioPlusOnDemand.Json
                     serializer.Serialize(writer, "23:00");
                     return;
             }
-            throw new Exception("Cannot marshal type HourRound:"+value);
-        }
 
-        public static readonly HourRoundConverter Singleton = new HourRoundConverter();
+            throw new Exception("Cannot marshal type HourRound:" + value);
+        }
     }
 }

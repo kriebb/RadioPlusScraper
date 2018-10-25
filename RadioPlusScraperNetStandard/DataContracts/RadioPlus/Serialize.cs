@@ -5,6 +5,9 @@ namespace RadioPlus.Json
 {
     public static class Serialize
     {
-        public static string ToJson(this Dictionary<string, RadioPlusAppData> self) => JsonConvert.SerializeObject(self, RadioPlus.Json.Converter.Settings);
+        public static string ToJson(this Dictionary<string, RadioPlusAppData> self)
+        {
+            return JsonConvert.SerializeObject(self, Converter.Settings);
+        }
     }
 }

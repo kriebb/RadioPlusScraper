@@ -12,9 +12,9 @@ namespace Selenium.WebDriver.WaitExtensions.WaitConditions
 {
     public class WebElementWaitConditions : IWebElementWaitConditions
     {
-        private readonly IWebDriver _webDriver;
-        private readonly int _waitMs;
         private readonly By _by;
+        private readonly int _waitMs;
+        private readonly IWebDriver _webDriver;
 
         public WebElementWaitConditions(IWebDriver webDriver, int waitMs, By by)
         {
@@ -26,7 +26,8 @@ namespace Selenium.WebDriver.WaitExtensions.WaitConditions
         public IWebElement ToExist()
         {
 #pragma warning disable CS0618 // Type or member is obsolete
-            new WebDriverWait(_webDriver, TimeSpan.FromMilliseconds(_waitMs)).Until(ExpectedConditions.ElementExists(_by));
+            new WebDriverWait(_webDriver, TimeSpan.FromMilliseconds(_waitMs)).Until(
+                ExpectedConditions.ElementExists(_by));
 #pragma warning restore CS0618 // Type or member is obsolete
             return _webDriver.FindElement(_by);
         }

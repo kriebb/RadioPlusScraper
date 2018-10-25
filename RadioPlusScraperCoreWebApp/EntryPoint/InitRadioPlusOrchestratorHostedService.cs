@@ -12,10 +12,15 @@ namespace RadioPlusScraperCoreWebApp.EntryPoint
         private readonly ILogger _logger;
         private readonly IRadioPlusDownloadScheduler _scheduler;
 
-        public InitRadioPlusOrchestratorHostedService(ILogger<InitRadioPlusOrchestratorHostedService> logger, IRadioPlusDownloadScheduler scheduler)
+        public InitRadioPlusOrchestratorHostedService(ILogger<InitRadioPlusOrchestratorHostedService> logger,
+            IRadioPlusDownloadScheduler scheduler)
         {
             _logger = logger;
             _scheduler = scheduler;
+        }
+
+        public void Dispose()
+        {
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
@@ -25,16 +30,14 @@ namespace RadioPlusScraperCoreWebApp.EntryPoint
             try
             {
                 _scheduler.ScheduleJob(TimeSpan.Zero);
-
             }
             catch (Exception e)
             {
-                Trace.Fail("Could not start the Orchestrator", e.Message + System.Environment.NewLine + e.StackTrace);
+                Trace.Fail("Could not start the Orchestrator", e.Message + Environment.NewLine + e.StackTrace);
             }
 
             return Task.CompletedTask;
         }
-
 
 
         public Task StopAsync(CancellationToken cancellationToken)
@@ -43,10 +46,6 @@ namespace RadioPlusScraperCoreWebApp.EntryPoint
 
 
             return Task.CompletedTask;
-        }
-
-        public void Dispose()
-        {
         }
     }
 }

@@ -7,7 +7,7 @@ namespace RadioPlusScraperCoreWebApp.HangfireManagement
     {
         public bool Authorize(DashboardContext context)
         {
-            Microsoft.AspNetCore.Http.HttpContext httpContext = context.GetHttpContext();
+            var httpContext = context.GetHttpContext();
             Trace.WriteLine($"Identity Name: {httpContext.User.Identity.Name}");
             Trace.WriteLine($"Authentication Type: {httpContext.User.Identity.AuthenticationType}");
             Trace.WriteLine($"IsAuthenticated: {httpContext.User.Identity.IsAuthenticated}");

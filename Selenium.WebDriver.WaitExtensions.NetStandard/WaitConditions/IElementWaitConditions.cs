@@ -6,18 +6,18 @@
 
 namespace Selenium.WebDriver.WaitExtensions.WaitConditions
 {
-  public interface IElementWaitConditions
-  {
-    void ToBeVisible();
+    public interface IElementWaitConditions
+    {
+        void ToBeVisible();
 
-    void ToBeInvisible();
+        void ToBeInvisible();
 
-    void ToBeDisabled();
+        void ToBeDisabled();
 
-    void ToBeEnabled();
+        void ToBeEnabled();
 
-    void ToBeSelected();
+        void ToBeSelected();
 
-    void ToNotBeSelected();
-  }
+        void ToNotBeSelected();
+    }
 }

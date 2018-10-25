@@ -15,19 +15,19 @@ namespace RadioPlusScraperCoreWebApp.DockerManagement
 {
     public class DockerContainerHandler : IDockerContainerHandler
     {
-        private readonly string resourceGroupName = "seleniumContainerRegistry";
-        private readonly string containerRegistryName = "seleniumContainerRegistry";
-        private readonly string containerGroupName = "selenium-chrome-standalone";
-        private readonly string seleniumRepositoryName = "selenium";
-
         private static string _createdContainerGroupId;
+        private readonly string containerGroupName = "selenium-chrome-standalone";
+        private readonly string containerRegistryName = "seleniumContainerRegistry";
+        private readonly string resourceGroupName = "seleniumContainerRegistry";
+        private readonly string seleniumRepositoryName = "selenium";
         public static string ContainerSeleniumUrl { get; set; }
 
         public void Start(PerformContext context = null)
         {
             if (!string.IsNullOrWhiteSpace(_createdContainerGroupId))
             {
-                context.WriteLine("I was expecting that the _createdContainerGroupId should be empty. It is not. Stopping trying to start a container");
+                context.WriteLine(
+                    "I was expecting that the _createdContainerGroupId should be empty. It is not. Stopping trying to start a container");
                 return;
             }
 
@@ -35,37 +35,50 @@ namespace RadioPlusScraperCoreWebApp.DockerManagement
 
             lock (_createdContainerGroupId)
             {
-
-                IAzure azure = GetAzureContext(context);
+                var azure = GetAzureContext(context);
 
 
                 RunTaskBasedContainer(azure, context);
             }
         }
 
+        public void Stop(PerformContext context)
+        {
+            if (string.IsNullOrWhiteSpace(_createdContainerGroupId))
+            {
+                context.WriteLine("I was expecting a container; There is no Id, couldn't stop anything");
+                return;
+            }
+
+            lock (_createdContainerGroupId)
+            {
+                var azure = GetAzureContext(context);
+                DoStop(azure, _createdContainerGroupId, context);
+
+                _createdContainerGroupId = null;
+                ContainerSeleniumUrl = null;
+            }
+        }
+
         private void RunTaskBasedContainer(IAzure azure, PerformContext context)
         {
-
             context.WriteLine($"\nCreating container group '{containerGroupName}'");
 
-            Region azureRegion = Region.EuropeWest;
+            var azureRegion = Region.EuropeWest;
 
-            IRegistry azureRegistry = azure.ContainerRegistries.GetByResourceGroup(resourceGroupName, containerRegistryName);
+            var azureRegistry = azure.ContainerRegistries.GetByResourceGroup(resourceGroupName, containerRegistryName);
 
-            string privateRepoUrl = azureRegistry.LoginServerUrl + "/" + seleniumRepositoryName;
+            var privateRepoUrl = azureRegistry.LoginServerUrl + "/" + seleniumRepositoryName;
 
-            IRegistryCredentials acrCredentials = azureRegistry.GetCredentials();
+            var acrCredentials = azureRegistry.GetCredentials();
             // Create the container group
 
-            EnsureOnlyOneContainerInstanceExists(azure,context);
-            if (!TryGetContainerInstance(azure, out string randomContainerInstance, out IContainerGroup containerGroup))
-            {
-                if (!TryCreateRandomSeleniumContainerInstance(context,azure, azureRegion, azureRegistry, acrCredentials,
+            EnsureOnlyOneContainerInstanceExists(azure, context);
+            if (!TryGetContainerInstance(azure, out var randomContainerInstance, out var containerGroup))
+                if (!TryCreateRandomSeleniumContainerInstance(context, azure, azureRegion, azureRegistry,
+                    acrCredentials,
                     privateRepoUrl, out containerGroup, out randomContainerInstance))
-                {
                     throw new Exception("Couldn't get or create a selenium Container");
-                }
-            }
 
 
             _createdContainerGroupId = containerGroup.Id;
@@ -77,35 +90,33 @@ namespace RadioPlusScraperCoreWebApp.DockerManagement
 
         private bool TryGetContainerInstance(IAzure azure, out string containerId, out IContainerGroup containerGroup)
         {
-            System.Collections.Generic.IEnumerable<IContainerGroup> seleniumContainerGroups = azure.ContainerGroups.ListByResourceGroup("seleniumContainerRegistry");
+            var seleniumContainerGroups = azure.ContainerGroups.ListByResourceGroup("seleniumContainerRegistry");
             containerGroup = seleniumContainerGroups.FirstOrDefault();
             containerId = containerGroup?.Id;
             return containerGroup != null;
         }
 
-        private void EnsureOnlyOneContainerInstanceExists(IAzure azure,PerformContext context)
+        private void EnsureOnlyOneContainerInstanceExists(IAzure azure, PerformContext context)
         {
-            System.Collections.Generic.IEnumerable<IContainerGroup> seleniumContainerGroups = azure.ContainerGroups.ListByResourceGroup("seleniumContainerRegistry");
+            var seleniumContainerGroups = azure.ContainerGroups.ListByResourceGroup("seleniumContainerRegistry");
             if (seleniumContainerGroups.Count() > 1)
             {
                 context.WriteLine("We found multiple containers. Going to stop all, except the first in the list");
-                IContainerGroup first = seleniumContainerGroups.First();
-                System.Collections.Generic.List<IContainerGroup> listOfContainersToRemove = seleniumContainerGroups.ToList();
+                var first = seleniumContainerGroups.First();
+                var listOfContainersToRemove = seleniumContainerGroups.ToList();
                 listOfContainersToRemove.Remove(first);
-                foreach (IContainerGroup container in listOfContainersToRemove)
-                {
-                    DoStop(azure, container.Id,context);
-                }
+                foreach (var container in listOfContainersToRemove) DoStop(azure, container.Id, context);
             }
-
         }
 
-        private bool TryCreateRandomSeleniumContainerInstance(PerformContext context, IAzure azure, Region azureRegion, IRegistry azureRegistry,
-            IRegistryCredentials acrCredentials, string privateRepoUrl, out IContainerGroup containerGroup, out string randomContainerInstance)
+        private bool TryCreateRandomSeleniumContainerInstance(PerformContext context, IAzure azure, Region azureRegion,
+            IRegistry azureRegistry,
+            IRegistryCredentials acrCredentials, string privateRepoUrl, out IContainerGroup containerGroup,
+            out string randomContainerInstance)
         {
             try
             {
-                string randomContainerGroupName = SdkContext.RandomResourceName(containerGroupName, 63);
+                var randomContainerGroupName = SdkContext.RandomResourceName(containerGroupName, 63);
                 randomContainerInstance = SdkContext.RandomResourceName(seleniumRepositoryName + "-instance-", 63);
                 containerGroup = azure.ContainerGroups.Define(randomContainerGroupName)
                     .WithRegion(azureRegion)
@@ -132,34 +143,14 @@ namespace RadioPlusScraperCoreWebApp.DockerManagement
             }
         }
 
-        public void Stop(PerformContext context)
-        {
-            if (string.IsNullOrWhiteSpace(_createdContainerGroupId))
-            {
-                context.WriteLine("I was expecting a container; There is no Id, couldn't stop anything");
-                return;
-            }
-
-            lock (_createdContainerGroupId)
-            {
-
-                IAzure azure = GetAzureContext(context);
-                DoStop(azure, _createdContainerGroupId, context);
-
-                _createdContainerGroupId = null;
-                ContainerSeleniumUrl = null;
-            }
-        }
-
         private void DoStop(IAzure azure, string containerGroupId, PerformContext context)
         {
-            IContainerGroup containerGroup = azure.ContainerGroups.GetById(containerGroupId);
+            var containerGroup = azure.ContainerGroups.GetById(containerGroupId);
             context.WriteLine($"Stopping ContainerGroup {containerGroup.Name}");
 
             containerGroup.Stop();
             context.WriteLine($"Deleting ContainerGroup {containerGroup.Name}");
             azure.ContainerGroups.DeleteById(containerGroup.Id);
-
         }
 
         private static IAzure GetAzureContext(PerformContext context)
@@ -168,16 +159,20 @@ namespace RadioPlusScraperCoreWebApp.DockerManagement
 
             try
             {
-                context.WriteLine($"Authenticating with Azure using servicePrincipal");
+                context.WriteLine("Authenticating with Azure using servicePrincipal");
 
-                AzureCredentialsFactory azureCredentialsFactory = new AzureCredentialsFactory();
-                string clientId = "29db2293-7e74-4715-9c88-32eece20e270";
-                string clientSecret = "6O1koUAfwco+8wZHPmrjeOECSQVgAvyZYiuS+6vPbL0=";
-                string tenantId = "b170db8b-8e00-4ad4-a076-ccc84281725d";
-                string subscriptionId = "7ebdeab9-8060-4fe5-b6c5-a522c7f206b6";
-                AzureCredentials azureCredentials = azureCredentialsFactory.FromServicePrincipal(clientId, clientSecret, tenantId, AzureEnvironment.AzureGlobalCloud);
-                azure = Azure.Configure().WithLogLevel(HttpLoggingDelegatingHandler.Level.Basic).WithRetryPolicy(new RetryPolicy(new TransientErrorIgnoreStrategy(), new ExponentialBackoffRetryStrategy())).Authenticate(azureCredentials).WithSubscription(subscriptionId);
-                ISubscription sub = azure.GetCurrentSubscription();
+                var azureCredentialsFactory = new AzureCredentialsFactory();
+                var clientId = "29db2293-7e74-4715-9c88-32eece20e270";
+                var clientSecret = "6O1koUAfwco+8wZHPmrjeOECSQVgAvyZYiuS+6vPbL0=";
+                var tenantId = "b170db8b-8e00-4ad4-a076-ccc84281725d";
+                var subscriptionId = "7ebdeab9-8060-4fe5-b6c5-a522c7f206b6";
+                var azureCredentials = azureCredentialsFactory.FromServicePrincipal(clientId, clientSecret, tenantId,
+                    AzureEnvironment.AzureGlobalCloud);
+                azure = Azure.Configure().WithLogLevel(HttpLoggingDelegatingHandler.Level.Basic)
+                    .WithRetryPolicy(new RetryPolicy(new TransientErrorIgnoreStrategy(),
+                        new ExponentialBackoffRetryStrategy())).Authenticate(azureCredentials)
+                    .WithSubscription(subscriptionId);
+                var sub = azure.GetCurrentSubscription();
 
                 context.WriteLine($"Authenticated with subscription '{sub.DisplayName}' (ID: {sub.SubscriptionId})");
             }
@@ -192,6 +187,5 @@ namespace RadioPlusScraperCoreWebApp.DockerManagement
 
             return azure;
         }
-
     }
 }

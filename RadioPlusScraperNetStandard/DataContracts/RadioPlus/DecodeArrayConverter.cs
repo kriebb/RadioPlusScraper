@@ -6,7 +6,12 @@ namespace RadioPlus.Json
 {
     internal class DecodeArrayConverter : JsonConverter
     {
-        public override bool CanConvert(Type t) => t == typeof(long[]);
+        public static readonly DecodeArrayConverter Singleton = new DecodeArrayConverter();
+
+        public override bool CanConvert(Type t)
+        {
+            return t == typeof(long[]);
+        }
 
         public override object ReadJson(JsonReader reader, Type t, object existingValue, JsonSerializer serializer)
         {
@@ -15,26 +20,25 @@ namespace RadioPlus.Json
             while (reader.TokenType != JsonToken.EndArray)
             {
                 var converter = ParseStringConverter.Singleton;
-                var arrayItem = (long)converter.ReadJson(reader, typeof(long), null, serializer);
+                var arrayItem = (long) converter.ReadJson(reader, typeof(long), null, serializer);
                 value.Add(arrayItem);
                 reader.Read();
             }
+
             return value.ToArray();
         }
 
         public override void WriteJson(JsonWriter writer, object untypedValue, JsonSerializer serializer)
         {
-            var value = (long[])untypedValue;
+            var value = (long[]) untypedValue;
             writer.WriteStartArray();
             foreach (var arrayItem in value)
             {
                 var converter = ParseStringConverter.Singleton;
                 converter.WriteJson(writer, arrayItem, serializer);
             }
-            writer.WriteEndArray();
-            return;
-        }
 
-        public static readonly DecodeArrayConverter Singleton = new DecodeArrayConverter();
+            writer.WriteEndArray();
+        }
     }
 }

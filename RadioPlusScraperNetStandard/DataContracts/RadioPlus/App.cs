@@ -2,15 +2,12 @@
 
 namespace RadioPlus.Json
 {
-    public partial class App
+    public class App
     {
-        [JsonProperty("ios_button")]
-        public string IosButton { get; set; }
+        [JsonProperty("ios_button")] public string IosButton { get; set; }
 
-        [JsonProperty("ios_smart_banner")]
-        public string IosSmartBanner { get; set; }
+        [JsonProperty("ios_smart_banner")] public string IosSmartBanner { get; set; }
 
-        [JsonProperty("android")]
-        public string Android { get; set; }
+        [JsonProperty("android")] public string Android { get; set; }
     }
 }

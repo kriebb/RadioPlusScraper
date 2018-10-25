@@ -9,46 +9,46 @@ using OpenQA.Selenium;
 
 namespace Selenium.WebDriver.WaitExtensions.WaitConditions
 {
-  public class TextWaitConditions : WaitConditionsBase, ITextWaitConditions
-  {
-    private readonly IWebElement _webelement;
-
-    public TextWaitConditions(IWebElement webelement, int waitMs)
-      : base(waitMs)
+    public class TextWaitConditions : WaitConditionsBase, ITextWaitConditions
     {
-      _webelement = webelement;
-    }
+        private readonly IWebElement _webelement;
 
-    public bool ToEqual(string text)
-    {
-      return WaitFor(() => _webelement.Text == text, "Waiting for Text to change.");
-    }
+        public TextWaitConditions(IWebElement webelement, int waitMs)
+            : base(waitMs)
+        {
+            _webelement = webelement;
+        }
 
-    public bool ToNotEqual(string text)
-    {
-      return WaitFor(() => _webelement.Text != text, "Waiting for Text to change.");
-    }
+        public bool ToEqual(string text)
+        {
+            return WaitFor(() => _webelement.Text == text, "Waiting for Text to change.");
+        }
 
-    public bool ToContain(string text)
-    {
-      return WaitFor(() => _webelement.Text.Contains(text), "Waiting for Text to change.");
-    }
+        public bool ToNotEqual(string text)
+        {
+            return WaitFor(() => _webelement.Text != text, "Waiting for Text to change.");
+        }
 
-    public bool ToNotContain(string text)
-    {
-      return WaitFor(() => !_webelement.Text.Contains(text), "Waiting for Text to change.");
-    }
+        public bool ToContain(string text)
+        {
+            return WaitFor(() => _webelement.Text.Contains(text), "Waiting for Text to change.");
+        }
 
-    public bool ToMatch(string regexPattern)
-    {
-      Regex regex = new Regex(regexPattern);
-      return WaitFor(() => regex.Match(_webelement.Text).Success, "Waiting for Text to change.");
-    }
+        public bool ToNotContain(string text)
+        {
+            return WaitFor(() => !_webelement.Text.Contains(text), "Waiting for Text to change.");
+        }
 
-    public bool ToNotMatch(string regexPattern)
-    {
-      Regex regex = new Regex(regexPattern);
-      return WaitFor(() => !regex.Match(_webelement.Text).Success, "Waiting for Text to change.");
+        public bool ToMatch(string regexPattern)
+        {
+            var regex = new Regex(regexPattern);
+            return WaitFor(() => regex.Match(_webelement.Text).Success, "Waiting for Text to change.");
+        }
+
+        public bool ToNotMatch(string regexPattern)
+        {
+            var regex = new Regex(regexPattern);
+            return WaitFor(() => !regex.Match(_webelement.Text).Success, "Waiting for Text to change.");
+        }
     }
-  }
 }

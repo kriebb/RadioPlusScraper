@@ -11,58 +11,60 @@ using OpenQA.Selenium.Internal;
 
 namespace Selenium.WebDriver.WaitExtensions.WaitConditions
 {
-  public class AttributeWaitConditions : WaitConditionsBase, IAttributeWaitConditions
-  {
-    private readonly IWebElement _webelement;
-
-    public AttributeWaitConditions(IWebElement webelement, int delayMs)
-      : base(delayMs)
+    public class AttributeWaitConditions : WaitConditionsBase, IAttributeWaitConditions
     {
-      _webelement = webelement;
-    }
+        private readonly IWebElement _webelement;
 
-    public bool ToContain(string attrName)
-    {
-      return WaitFor(() => !string.IsNullOrEmpty(_webelement.GetAttribute(attrName)), GetAttributesString());
-    }
+        public AttributeWaitConditions(IWebElement webelement, int delayMs)
+            : base(delayMs)
+        {
+            _webelement = webelement;
+        }
 
-    public bool ToNotContain(string attrName)
-    {
-      return WaitFor(() => !ToContain(attrName), GetAttributesString());
-    }
+        public bool ToContain(string attrName)
+        {
+            return WaitFor(() => !string.IsNullOrEmpty(_webelement.GetAttribute(attrName)), GetAttributesString());
+        }
 
-    public bool ToContainWithValue(string attrName, string attrValue)
-    {
-      return WaitFor(() =>
-      {
-          if (ToContain(attrName))
-              return _webelement.GetAttribute(attrName) == attrValue;
-          return false;
-      }, GetAttributesString());
-    }
+        public bool ToNotContain(string attrName)
+        {
+            return WaitFor(() => !ToContain(attrName), GetAttributesString());
+        }
 
-    public bool ToContainWithoutValue(string attrName, string attrValue)
-    {
-      return WaitFor(() =>
-      {
-          if (!ToContain(attrName))
-              return _webelement.GetAttribute(attrName) != attrValue;
-          return false;
-      }, GetAttributesString());
-    }
+        public bool ToContainWithValue(string attrName, string attrValue)
+        {
+            return WaitFor(() =>
+            {
+                if (ToContain(attrName))
+                    return _webelement.GetAttribute(attrName) == attrValue;
+                return false;
+            }, GetAttributesString());
+        }
 
-    private IDictionary<string, object> GetElementAttributes()
-    {
-      return ((IJavaScriptExecutor) ((IWrapsDriver) _webelement).WrappedDriver).ExecuteScript("var items = {}; for (index = 0; index < arguments[0].attributes.length; ++index) { items[arguments[0].attributes[index].name] = arguments[0].attributes[index].value }; return items;", (object) _webelement) as Dictionary<string, object>;
-    }
+        public bool ToContainWithoutValue(string attrName, string attrValue)
+        {
+            return WaitFor(() =>
+            {
+                if (!ToContain(attrName))
+                    return _webelement.GetAttribute(attrName) != attrValue;
+                return false;
+            }, GetAttributesString());
+        }
 
-    private string GetAttributesString()
-    {
-      IDictionary<string, object> elementAttributes = GetElementAttributes();
-      string str = "";
-      if (elementAttributes.Count > 0)
-        str = string.Join("\n   ", elementAttributes.Keys.Select(k => k + " = " + elementAttributes[k]));
-      return string.Format("attribute list;{0}", str);
+        private IDictionary<string, object> GetElementAttributes()
+        {
+            return ((IJavaScriptExecutor) ((IWrapsDriver) _webelement).WrappedDriver).ExecuteScript(
+                "var items = {}; for (index = 0; index < arguments[0].attributes.length; ++index) { items[arguments[0].attributes[index].name] = arguments[0].attributes[index].value }; return items;",
+                (object) _webelement) as Dictionary<string, object>;
+        }
+
+        private string GetAttributesString()
+        {
+            var elementAttributes = GetElementAttributes();
+            var str = "";
+            if (elementAttributes.Count > 0)
+                str = string.Join("\n   ", elementAttributes.Keys.Select(k => k + " = " + elementAttributes[k]));
+            return string.Format("attribute list;{0}", str);
+        }
     }
-  }
 }

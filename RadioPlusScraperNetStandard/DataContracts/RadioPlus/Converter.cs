@@ -10,13 +10,14 @@ namespace RadioPlus.Json
         {
             MetadataPropertyHandling = MetadataPropertyHandling.Ignore,
             DateParseHandling = DateParseHandling.None,
-            Converters = {
+            Converters =
+            {
                 InteractConverter.Singleton,
                 SendingConverter.Singleton,
                 SubmitConverter.Singleton,
                 SuccesConverter.Singleton,
-                new IsoDateTimeConverter { DateTimeStyles = DateTimeStyles.AssumeUniversal }
-            },
+                new IsoDateTimeConverter {DateTimeStyles = DateTimeStyles.AssumeUniversal}
+            }
         };
     }
 }

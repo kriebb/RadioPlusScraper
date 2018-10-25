@@ -5,7 +5,12 @@ namespace RadioPlus.Json
 {
     internal class SubmitConverter : JsonConverter
     {
-        public override bool CanConvert(Type t) => t == typeof(Submit) || t == typeof(Submit?);
+        public static readonly SubmitConverter Singleton = new SubmitConverter();
+
+        public override bool CanConvert(Type t)
+        {
+            return t == typeof(Submit) || t == typeof(Submit?);
+        }
 
         public override object ReadJson(JsonReader reader, Type t, object existingValue, JsonSerializer serializer)
         {
@@ -18,6 +23,7 @@ namespace RadioPlus.Json
                 case "Stuur ons uw reactie":
                     return Submit.StuurOnsUwReactie;
             }
+
             throw new Exception("Cannot unmarshal type Submit");
         }
 
@@ -28,7 +34,8 @@ namespace RadioPlus.Json
                 serializer.Serialize(writer, null);
                 return;
             }
-            var value = (Submit)untypedValue;
+
+            var value = (Submit) untypedValue;
             switch (value)
             {
                 case Submit.StuurOnsJeReactie:
@@ -38,9 +45,8 @@ namespace RadioPlus.Json
                     serializer.Serialize(writer, "Stuur ons uw reactie");
                     return;
             }
+
             throw new Exception("Cannot marshal type Submit");
         }
-
-        public static readonly SubmitConverter Singleton = new SubmitConverter();
     }
 }

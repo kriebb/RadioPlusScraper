@@ -13,7 +13,6 @@ using RadioPlusScraperCoreWebApp.JobsOrchestrationManagement;
 using RadioPlusScraperCoreWebApp.RadioPlusManagement;
 using RadioPlusScraperCoreWebApp.RadioPlusManagement.Impl;
 using WebScrapingProject;
-using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
 namespace RadioPlusScraperCoreWebApp.EntryPoint
 {
@@ -21,16 +20,17 @@ namespace RadioPlusScraperCoreWebApp.EntryPoint
     {
         public Startup(IHostingEnvironment env)
         {
-            ConfigurationBuilder builder = new ConfigurationBuilder();
+            var builder = new ConfigurationBuilder();
 
             builder.SetBasePath(env.ContentRootPath)
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true);
+                .AddJsonFile("appsettings.json", false, true)
+                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", true);
 
             builder.AddEnvironmentVariables();
 
             Configuration = builder.Build();
         }
+
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -41,7 +41,6 @@ namespace RadioPlusScraperCoreWebApp.EntryPoint
             {
                 globalConfig.UseMemoryStorage();
                 globalConfig.UseConsole();
-
             });
             services.AddMvc().AddControllersAsServices().WithRazorPagesAtContentRoot();
 
@@ -55,22 +54,19 @@ namespace RadioPlusScraperCoreWebApp.EntryPoint
             services.AddSingleton<IRadioPlusDownloadScheduler, RadioPlusDownloadScheduler>();
 
             services.AddSingleton<IDockerContainerHandler, DockerContainerHandler>();
-            services.AddSingleton<IConfiguration>(serviceProvider => Configuration);
+            services.AddSingleton(serviceProvider => Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            if (env.IsDevelopment()) app.UseDeveloperExceptionPage();
 
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-
-            app.UseHangfireServer(new BackgroundJobServerOptions() { Queues = new string[] { "Download", "default" }, WorkerCount = 1 });
-            app.UseHangfireDashboard("/hangfire", new DashboardOptions { Authorization = new[] { new NoAuthorizationFilter() } });
+            app.UseHangfireServer(new BackgroundJobServerOptions
+                {Queues = new[] {"Download", "default"}, WorkerCount = 1});
+            app.UseHangfireDashboard("/hangfire",
+                new DashboardOptions {Authorization = new[] {new NoAuthorizationFilter()}});
             app.UseMvc();
-
         }
     }
 }

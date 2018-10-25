@@ -5,7 +5,12 @@ namespace RadioPlus.Json
 {
     internal class InteractConverter : JsonConverter
     {
-        public override bool CanConvert(Type t) => t == typeof(Interact) || t == typeof(Interact?);
+        public static readonly InteractConverter Singleton = new InteractConverter();
+
+        public override bool CanConvert(Type t)
+        {
+            return t == typeof(Interact) || t == typeof(Interact?);
+        }
 
         public override object ReadJson(JsonReader reader, Type t, object existingValue, JsonSerializer serializer)
         {
@@ -18,6 +23,7 @@ namespace RadioPlus.Json
                 case "Laat van u horen!":
                     return Interact.LaatVanUHoren;
             }
+
             throw new Exception("Cannot unmarshal type Interact");
         }
 
@@ -28,7 +34,8 @@ namespace RadioPlus.Json
                 serializer.Serialize(writer, null);
                 return;
             }
-            var value = (Interact)untypedValue;
+
+            var value = (Interact) untypedValue;
             switch (value)
             {
                 case Interact.LaatVanJeHoren:
@@ -38,9 +45,8 @@ namespace RadioPlus.Json
                     serializer.Serialize(writer, "Laat van u horen!");
                     return;
             }
+
             throw new Exception("Cannot marshal type Interact");
         }
-
-        public static readonly InteractConverter Singleton = new InteractConverter();
     }
 }

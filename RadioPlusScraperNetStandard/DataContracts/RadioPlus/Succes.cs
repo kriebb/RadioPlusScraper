@@ -1,4 +1,8 @@
 ﻿namespace RadioPlus.Json
 {
-    public enum Succes { BedanktVoorJeReactie, BedanktVoorUwReactie };
+    public enum Succes
+    {
+        BedanktVoorJeReactie,
+        BedanktVoorUwReactie
+    }
 }

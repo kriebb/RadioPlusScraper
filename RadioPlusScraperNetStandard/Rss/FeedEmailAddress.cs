@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Uncas.Web
+﻿namespace Uncas.Web
 {
     public class FeedEmailAddress
     {
@@ -10,8 +6,8 @@ namespace Uncas.Web
         {
             Feed.CheckRequiredValue(emailAddress, "emailAddress");
             Feed.CheckRequiredValue(realName, "realName");
-            this.EmailAddress = emailAddress;
-            this.RealName = realName;
+            EmailAddress = emailAddress;
+            RealName = realName;
         }
 
         public string EmailAddress { get; set; }
@@ -19,7 +15,7 @@ namespace Uncas.Web
 
         public override string ToString()
         {
-            return string.Format("{0} ({1})", this.EmailAddress, this.RealName);
+            return string.Format("{0} ({1})", EmailAddress, RealName);
         }
     }
 }

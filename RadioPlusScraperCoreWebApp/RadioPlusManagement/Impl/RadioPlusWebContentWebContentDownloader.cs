@@ -22,7 +22,8 @@ namespace RadioPlusScraperCoreWebApp.RadioPlusManagement.Impl
 
                 context.WriteLine($"using ContainerSeleniumUrl: {DockerContainerHandler.ContainerSeleniumUrl}");
 
-                using (RemoteWebDriver driver = new RemoteWebDriver(new Uri(DockerContainerHandler.ContainerSeleniumUrl), new ChromeOptions() { AcceptInsecureCertificates = true }))
+                using (var driver = new RemoteWebDriver(new Uri(DockerContainerHandler.ContainerSeleniumUrl),
+                    new ChromeOptions {AcceptInsecureCertificates = true}))
                 {
                     driver.Navigate().GoToUrl(channelUrl);
                     driver.Wait(6000000).ForPage().ReadyStateComplete();
@@ -35,10 +36,9 @@ namespace RadioPlusScraperCoreWebApp.RadioPlusManagement.Impl
                     onDemandMaterialJson =
                         driver.ExecuteJavaScript<string>(
                             "return (JSON.stringify(require('app').currentView.content.channel.ondemand));");
-
                 }
 
-                RadioPlusOnDemandData[] onDemandMaterialData = RadioPlusOnDemandData.FromJson(onDemandMaterialJson);
+                var onDemandMaterialData = RadioPlusOnDemandData.FromJson(onDemandMaterialJson);
 
 
                 return onDemandMaterialData;
@@ -50,9 +50,9 @@ namespace RadioPlusScraperCoreWebApp.RadioPlusManagement.Impl
                 context.WriteLine(e.StackTrace);
                 context.ResetTextColor();
 
-                throw new Exception("Something went wrong when try to download the ondemandmaterialjson: " + e.Message, e);
+                throw new Exception("Something went wrong when try to download the ondemandmaterialjson: " + e.Message,
+                    e);
             }
-
         }
     }
 }

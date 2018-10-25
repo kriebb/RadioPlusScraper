@@ -9,11 +9,11 @@ using Selenium.WebDriver.WaitExtensions.WaitTypeSelections;
 
 namespace Selenium.WebDriver.WaitExtensions
 {
-  public static class WebElementExtensions
-  {
-    public static IElementWaitTypeSelection Wait(this IWebElement webelement, int ms = 500)
+    public static class WebElementExtensions
     {
-      return new ElementWaitTypeSelection(webelement, ms);
+        public static IElementWaitTypeSelection Wait(this IWebElement webelement, int ms = 500)
+        {
+            return new ElementWaitTypeSelection(webelement, ms);
+        }
     }
-  }
 }

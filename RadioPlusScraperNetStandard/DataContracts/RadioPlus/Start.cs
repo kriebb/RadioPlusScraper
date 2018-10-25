@@ -3,21 +3,17 @@ using Newtonsoft.Json;
 
 namespace RadioPlusOnDemand.Json
 {
-    public partial class Start
+    public class Start
     {
-        [JsonProperty("date")]
-        public DateTimeOffset Date { get; set; }
+        [JsonProperty("date")] public DateTimeOffset Date { get; set; }
 
-        [JsonProperty("hourRound")]
-        public HourRound HourRound { get; set; }
+        [JsonProperty("hourRound")] public HourRound HourRound { get; set; }
 
-        [JsonProperty("hour")]
-        public string Hour { get; set; }
+        [JsonProperty("hour")] public string Hour { get; set; }
 
         [JsonProperty("endHour", NullValueHandling = NullValueHandling.Ignore)]
         public string EndHour { get; set; }
 
-        [JsonProperty("day")]
-        public string Day { get; set; }
+        [JsonProperty("day")] public string Day { get; set; }
     }
 }

@@ -1,4 +1,7 @@
 ﻿namespace RadioPlusOnDemand.Json
 {
-    public enum ClassName { Entryonly };
+    public enum ClassName
+    {
+        Entryonly
+    }
 }

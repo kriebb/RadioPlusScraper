@@ -1,4 +1,8 @@
 ﻿namespace RadioPlus.Json
 {
-    public enum Sending { JeReactieWordtNuVerstuurd, UwReactieWordtNuVerstuurd };
+    public enum Sending
+    {
+        JeReactieWordtNuVerstuurd,
+        UwReactieWordtNuVerstuurd
+    }
 }
